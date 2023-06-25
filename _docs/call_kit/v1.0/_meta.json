@@ -1,0 +1,10 @@
+{
+    "en_us": {
+        "title": "English",
+        "type": "folder"
+    },
+    "zh_cn": {
+        "title": "简体中文",
+        "type": "folder"
+    }
+}

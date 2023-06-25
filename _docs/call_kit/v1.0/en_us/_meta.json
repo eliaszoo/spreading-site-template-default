@@ -1,0 +1,10 @@
+{
+    "preview": {
+        "title": "Preview",
+        "type": "file"
+    },
+    "quick_start": {
+        "title": "Quick Start",
+        "type": "folder"
+    }
+}

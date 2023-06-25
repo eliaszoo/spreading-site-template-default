@@ -1,0 +1,10 @@
+{
+    "quick_start": {
+        "title": "Quick Start",
+        "type": "file"
+    },
+    "quick_start_with_invitation": {
+        "title": "Quick Start With Invitation",
+        "type": "file"
+    }
+}
