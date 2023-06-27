@@ -21,7 +21,7 @@ type Props = {
     children: React.ReactNode,
     fullTreeData?: [],
 }
-  
+
 const PreviewLayout = ({ preview, children, fullTreeData = []}: Props) => {
     const router = useRouter();
     console.log('PreviewLayout router', router);
@@ -36,10 +36,18 @@ const PreviewLayout = ({ preview, children, fullTreeData = []}: Props) => {
     const rightClickHandle = ({ event, node }) => {
         console.log('rightClickHandle', node);
     };
+    // Split versions and languages
+    const splitHandle = () => {
+
+    }
+    
 
     const [path, setPath] = useState((router.query.slug as string[]).join('/'));
+    const [defaultSelectedKeys, setDefaultSelectedKeys] = useState([path]);
     const [breadcrumbData, setBreadcrumbData] = useState([]);
-    const [defaultSelectedKeys, setDefaultSelectedKeys] = useState([]);
+    const [versionList, setVersionList] = useState([]);
+    const [languageList, setLanguageList] = useState([]);
+    const [treeData, setTreeData] = useState(fullTreeData);
 
     useEffect(() => {
         console.log(path);
@@ -50,13 +58,12 @@ const PreviewLayout = ({ preview, children, fullTreeData = []}: Props) => {
             }
         });
         setBreadcrumbData(breadcrumbData);
-        setDefaultSelectedKeys([path]);
     }, [path]);
 
     return (
         <>
             <div className="min-h-screen preview-screen">
-                <header className="preview-header">top</header>
+                <header className="preview-header">Spreading</header>
                 <main className="preview-main">
                     <div className="preview-sider">
                         <Tree
@@ -66,7 +73,7 @@ const PreviewLayout = ({ preview, children, fullTreeData = []}: Props) => {
                             defaultExpandAll={true}
                             defaultSelectedKeys={defaultSelectedKeys}
                             onSelect={selectHandle}
-                            treeData={fullTreeData}
+                            treeData={treeData}
                             onRightClick={rightClickHandle}
                         />
                     </div>
