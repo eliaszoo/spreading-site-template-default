@@ -7,10 +7,12 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.1.4",
     "@mdx-js/loader": "^2.3.0",
     "@mdx-js/react": "^2.3.0",
     "@mdx-js/runtime": "^1.6.22",
     "@next/mdx": "^13.4.6",
+    "antd": "^5.6.3",
     "classnames": "^2.3.1",
     "date-fns": "^2.28.0",
     "esbuild": "^0.18.4",
