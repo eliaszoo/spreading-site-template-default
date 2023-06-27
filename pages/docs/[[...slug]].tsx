@@ -31,7 +31,7 @@ export default function DocPage({ code, frontmatter, slug, fullTreeData }) {
   const Component = useMemo(() => getMDXComponent(code), [code]);
 
   return (
-    <div className="prose dark:prose-invert prose-sm sm:prose-base lg:prose-lg xl:prose-2xl m-5 focus:outline-none">
+    <div className="prose" style={{ maxWidth: "unset" }}>
       <PreviewLayout fullTreeData={fullTreeData}>
         <h1>{frontmatter.title}</h1>
         <p>{frontmatter.description}</p>
