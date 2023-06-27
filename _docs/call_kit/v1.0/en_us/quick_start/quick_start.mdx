@@ -1,45 +1,64 @@
 ---
-title: 'Preview Mode for Static Generation'
-excerpt: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilities morbi tempus.'
-description: '/assets/blog/preview/cover.jpg'
-date: '2020-03-16T05:35:07.322Z'
+title: "Preview Mode for Static Generation"
+excerpt: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilities morbi tempus."
+description: "/assets/blog/preview/cover.jpg"
+date: "2020-03-16T05:35:07.322Z"
 ---
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilities morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.
+{/* import-start */}
+import { CodeBlock, H, Image, Video } from "listen-test-ui";
 
-Venenatis cras sed felis eget velit. Consectetur libero id faucibus nisl tincidunt. Gravida in fermentum et sollicitudin ac orci phasellus egestas tellus. Volutpat consequat mauris nunc congue nisi vitae. Id aliquet risus feugiat in ante metus dictum at tempor. Sed blandit libero volutpat sed cras. Sed odio morbi quis commodo odio aenean sed adipiscing. Velit euismod in pellentesque massa placerat. Mi bibendum neque egestas congue quisque egestas diam in arcu. Nisi lacus sed viverra tellus in. Nibh cras pulvinar mattis nunc sed. Luctus accumsan tortor posuere ac ut consequat semper viverra. Fringilla ut morbi tincidunt augue interdum velit euismod.
+{/* import-end */}
 
-## Lorem Ipsum
+<H level="1" id="h-using-npm-package-manager">
+  Using NPM package manager
+</H>
 
-Tristique senectus et netus et malesuada fames ac turpis. Ridiculous mus mauris vitae ultricies leo integer malesuada nunc vel. In mollis nunc sed id semper. Egestas tellus rutrum tellus pellentesque. Phasellus vestibulum lorem sed risus ultricies tristique nulla. Quis blandit turpis cursus in hac habitasse platea dictumst quisque. Eros donec ac odio tempor orci dapibus ultrices. Aliquam sem et tortor consequat id porta nibh. Adipiscing elit duis tristique sollicitudin nibh sit amet commodo nulla. Diam vulputate ut pharetra sit amet. Ut tellus elementum sagittis vitae et leo. Arcu non odio euismod lacinia at quis risus sed vulputate.
+This doc works in Web engineering frameworks, and supports both PC and mobile browsers (including WebViews). You can refer to this doc if you're using React, Vue, Angular, and other frameworks.
 
+<strong>加粗</strong>
 
-## Component
+<del>删除线</del>
 
+<em>斜体</em>
 
-import { Callout } from "listen-test-callout";
+<span style={{ textDecoration: "underline" }}>下划线</span>
 
-<Callout
-  attrs={{
-    icon: "💡",
-    color: "black",
-    background: "#fff5eb",
-    border: "#fed4a4",
-  }}>
-  hahah
-</Callout>
+<H level="2" id="h-install-the-sdk">
+  Install the SDK
+</H>
 
-import { useState } from 'react'
+<CodeBlock lang="js" focus="null" fileName="index.js">
+  const a = []; a.push("hello");
+</CodeBlock>
 
-{/* Import CSS modules */}
-// import styles from '../../components/counters.module.css'
+<H level="2" id="h-initialize-the-sdk">
+  Initialize the SDK
+</H>
 
-export const Counter = () => {
-  const [count, setCount] = useState(0); return (
-    <div>
-      <button onClick={() => setCount(count + 1)}>Clicked {count} times</button>
-    </div>
-  );
-};
+- First, you'll need to generate a [Kit Token](https://docs.zegocloud.com/article/14741).
+- Then, replace the `appID` and `serverSecret` parameters in the following code with your project's AppID and ServerSecret that you get from [Admin Console](https://console.zegocloud.com/project).
 
-<Counter/>
+1. 有序列表
+   1. 有序
+
+> 这是一个引用
+
+下面是个分割线
+
+---
+
+<Image
+  src="https://www.zegocloud.com/_nuxt/img/img_solution_social@2x.822fd96.jpg"
+  alt="ZEGOCLOUD"
+  title="ZEGOCLOUD"
+  inline="false"
+/>
+
+<Video
+  src="https://www.youtube.com/embed/K5fj1Hn_P2g"
+  start="0"
+  width="640"
+  height="480"
+  type="youtube"
+/>
