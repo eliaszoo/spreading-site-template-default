@@ -1,22 +1,23 @@
-import Container from '../components/container'
-import MoreStories from '../components/more-stories'
-import HeroPost from '../components/hero-post'
-import Intro from '../components/intro'
-import Layout from '../components/layout'
-import Head from 'next/head'
-import { CMS_NAME } from '../lib/constants'
-import Post from '../interfaces/post'
-
+import Container from "../components/container";
+import MoreStories from "../components/more-stories";
+import HeroPost from "../components/hero-post";
+import Intro from "../components/intro";
+import Layout from "../components/layout";
+import Head from "next/head";
+import { CMS_NAME } from "../lib/constants";
+import Post from "../interfaces/post";
+import { Text } from "listen-test-ui";
 type Props = {
-  allPosts: Post[]
-}
+  allPosts: Post[];
+};
 
 export default function Index({ allPosts }: Props) {
-  const heroPost = undefined//allPosts[0]
-  const morePosts = []//allPosts.slice(1)
+  const heroPost = undefined; //allPosts[0]
+  const morePosts = []; //allPosts.slice(1)
   return (
     <>
       <Layout>
+        <Text text="this is a test" />
         <Head>
           <title>{`Next.js Blog Example with ${CMS_NAME}`}</title>
         </Head>
@@ -36,7 +37,7 @@ export default function Index({ allPosts }: Props) {
         </Container>
       </Layout>
     </>
-  )
+  );
 }
 
 // export const getStaticProps = async () => {
