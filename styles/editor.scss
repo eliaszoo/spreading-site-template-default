@@ -12,7 +12,10 @@ blockquote {
     }
   }
 }
-
+a {
+  color: rgb(37, 99, 235) !important;
+  text-decoration-color: rgb(37, 99, 235) !important;
+}
 table {
   border-collapse: collapse;
   margin: 0;

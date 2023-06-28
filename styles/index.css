@@ -29,7 +29,7 @@ body {
   padding: 10px;
 }
 .preview-content {
-  padding: 10px 20px;
+  padding: 10px 40px;
   flex: 1;
   overflow: auto;
 }
