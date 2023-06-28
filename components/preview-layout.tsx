@@ -1,36 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Tree, Select, Space } from 'antd';
-import Router, { useRouter } from "next/router"
+import Router from "next/router";
 import { DownOutlined } from '@ant-design/icons';
 import type { TreeProps } from 'antd/es/tree';
 import { Breadcrumb } from 'antd';
-import { getFullTreeData } from '../lib/docs';
-
-// export const getStaticProps = async ({ params }) => {
-//     const fullTreeData = getFullTreeData();
-//     return {
-//       props: {
-//         fullTreeData,
-//       },
-//         revalidate: 60, // In seconds
-//     };
-// };
 
 type Props = {
     preview?: boolean
     children: React.ReactNode,
     fullTreeData?: [],
+    slug?: string[],
 }
 
-const PreviewLayout = ({ preview, children, fullTreeData = []}: Props) => {
-    const router = useRouter();
-    console.log('PreviewLayout slug', router.query.slug);
+const PreviewLayout = ({ preview, children, fullTreeData, slug }: Props) => {
+    console.log('PreviewLayout slug', fullTreeData, slug);
 
     // @ts-ignore
     const defaultVersionList = fullTreeData[0].children.map(
         (item, index) => ({ label: item.title, value: item.key, index })
     );
-    const defaultVersion = defaultVersionList.find(item => item.label === router.query.slug[1]);
+    const defaultVersion = defaultVersionList.find(item => item.label === slug[1]);
 
     // @ts-ignore
     const versionIndex = fullTreeData[0].children.findIndex(item => item.title === defaultVersion.label);
@@ -38,7 +27,7 @@ const PreviewLayout = ({ preview, children, fullTreeData = []}: Props) => {
     const defaultLanguageList = fullTreeData[0].children[versionIndex].children.map(
         (item, index) => ({ label: item.title, value: item.key, index })
     );
-    const defaultLanguage = defaultLanguageList.find(item => item.label === router.query.slug[2]);
+    const defaultLanguage = defaultLanguageList.find(item => item.label === slug[2]);
 
     // @ts-ignore
     const defaultTreeData = fullTreeData[0].children[versionIndex].children.find(item => item.title === defaultLanguage.label).children;
@@ -58,7 +47,7 @@ const PreviewLayout = ({ preview, children, fullTreeData = []}: Props) => {
     }
     const languageChangeHandle = (value, option) => {
         console.log('languageChangeHandle', value, option);
-        const temp = (router.query.slug as string[]).slice(3).join('/');
+        const temp = (slug as string[]).slice(3).join('/');
         Router.push(`${value.value}/${temp}`);
     }
     
@@ -91,13 +80,13 @@ const PreviewLayout = ({ preview, children, fullTreeData = []}: Props) => {
                             // @ts-ignore
                             switcherIcon={<DownOutlined />}
                             defaultExpandAll={true}
-                            defaultSelectedKeys={[(router.query.slug as string[]).join('/')]}
+                            defaultSelectedKeys={[(slug as string[]).join('/')]}
                             onSelect={selectHandle}
                             treeData={defaultTreeData}
                         />
                     </div>
                     <div className="preview-content">
-                        <Breadcrumb items={(router.query.slug as string[]).map((item: string, index: number) => {
+                        <Breadcrumb items={(slug as string[]).map((item: string, index: number) => {
                             return { title: item }
                         })} />
                         {children}
@@ -106,6 +95,7 @@ const PreviewLayout = ({ preview, children, fullTreeData = []}: Props) => {
             </div>
         </>
     );
+    // return (<div>{children}</div>);
 };
 
 export default PreviewLayout;
