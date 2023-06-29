@@ -13,8 +13,6 @@ type Props = {
 }
 
 const PreviewLayout = ({ preview, children, slug }: Props) => {
-    console.log('PreviewLayout slug', slug);
-
     // const { data, error } = useSWR('/api/tree', (...args) => fetch(...args).then((res) => res.json()));
     // console.log('PreviewLayout useSWR', data);
     // if (error) {
