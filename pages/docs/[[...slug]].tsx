@@ -1,15 +1,13 @@
 import { getMDXComponent } from "mdx-bundler/client";
 import { useMemo } from "react";
-import { getAllDocsInfo, getDocData, getFullTreeData } from "../../lib/docs";
+import { getAllDocsInfo, getDocData } from "../../lib/docs";
 import PreviewLayout from "../../components/preview-layout";
 
 export const getStaticProps = async ({ params }) => {
-  const fullTreeData = getFullTreeData();
   const postData = await getDocData(params.slug);
   return {
     props: {
       ...postData,
-      fullTreeData,
     },
     revalidate: 10, // In seconds
   };
@@ -24,7 +22,7 @@ export async function getStaticPaths() {
   };
 }
 
-export default function DocPage({ code, frontmatter, slug, fullTreeData }) {
+export default function DocPage({ code, frontmatter, slug }) {
   const Component = useMemo(() => getMDXComponent(code), [code]);
 
   return (

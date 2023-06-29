@@ -32,6 +32,7 @@ body {
   width: 350px;
   border-right: 1px solid #ddd;
   padding: 10px;
+  overflow: auto;
 }
 .preview-content {
   padding: 10px 40px;
