@@ -1,0 +1,10 @@
+{
+  "functions": {
+    "pages/docs/[[...slug]].tsx": {
+      "memory": 128
+    },
+    "src/pages/isr/**/*": {
+      "maxDuration": 10
+    }
+  }
+}
