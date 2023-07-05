@@ -1,9 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  serverless-nextjs-demo
-
-  Sample SAM Template for serverless-nextjs-demo
+  spreading
 
 Globals:
   Function:
