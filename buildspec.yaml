@@ -9,6 +9,8 @@ phases:
       # Discover and run unit tests in the '__tests__' directory
       #- npm run test
       # Remove all dependencies not needed for the Lambda deployment package (the packages from devDependencies in package.json)
+      - git clone https://github.com/eliaszoo/docs.git
+      - cp -rf docs/. ./
       - pnpm prune --production
   build:
     commands:
