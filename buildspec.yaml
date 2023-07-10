@@ -3,7 +3,13 @@ phases:
   install:
     commands:
       # Install all dependencies (including dependencies for running tests)
-      - pnpm install
+      - apt-get update -y
+      - apt install -y python3-pip
+      - pip3 install awscli
+      - pip3 install aws-sam-cli
+      - apt install -y nodejs
+      - apt install -y npm
+      - npm install -g pnpm
   pre_build:
     commands:
       # Discover and run unit tests in the '__tests__' directory
