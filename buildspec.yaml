@@ -21,7 +21,7 @@ phases:
   build:
     commands:
       # Use AWS SAM to package the application by using AWS CloudFormation
-      - aws cloudformation package --template template.yml --s3-bucket aws-sam-cli-managed-default-samclisourcebucket-wzxzs8p08pkk --output-template-file template-export.yml
+      - aws cloudformation package --template template.yaml --s3-bucket aws-sam-cli-managed-default-samclisourcebucket-wzxzs8p08pkk --output-template-file template-export.yml --debug
 artifacts:
   files:
     - template-export.yml
