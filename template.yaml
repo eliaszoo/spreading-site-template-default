@@ -5,14 +5,14 @@ Description: >
 
 Globals:
   Function:
-    Timeout: 10
+    Timeout: 2
 
 Resources:
   NextFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: .
-      MemorySize: 512
+      MemorySize: 256
       Handler: run.sh
       Runtime: nodejs16.x
       Architectures:

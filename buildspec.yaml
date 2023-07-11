@@ -3,8 +3,6 @@ phases:
   install:
     commands:
       # Install all dependencies (including dependencies for running tests)
-      - apt-get update -y
-      - apt install -y python3-pip
       - pip3 install awscli
       - pip3 install aws-sam-cli
       - apt install -y nodejs
@@ -16,12 +14,13 @@ phases:
       #- npm run test
       # Remove all dependencies not needed for the Lambda deployment package (the packages from devDependencies in package.json)
       - git clone https://github.com/eliaszoo/docs.git
-      - cp -rf docs/. ./
-      - pnpm prune --production
+      - cp -rf docs/_docs. ./docs
   build:
     commands:
       # Use AWS SAM to package the application by using AWS CloudFormation
-      - aws cloudformation package --template template.yaml --s3-bucket aws-sam-cli-managed-default-samclisourcebucket-wzxzs8p08pkk --output-template-file template-export.yml --debug
+      - sam build
+      - sam deploy
+      #- aws cloudformation package --template template.yaml --s3-bucket aws-sam-cli-managed-default-samclisourcebucket-wzxzs8p08pkk --output-template-file template-export.yml --debug
 artifacts:
   files:
     - template-export.yml
