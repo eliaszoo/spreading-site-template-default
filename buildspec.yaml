@@ -3,6 +3,7 @@ phases:
   install:
     commands:
       # Install all dependencies (including dependencies for running tests)
+      - apt-get update -y
       #- pip3 install awscli
       - pip3 install aws-sam-cli
       #- apt install -y nodejs
