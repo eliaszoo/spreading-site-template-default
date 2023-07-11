@@ -6,7 +6,7 @@ phases:
       - apt-get update -y
       #- pip3 install awscli
       - pip3 install aws-sam-cli
-      #- apt install -y nodejs
+      - apt install -y nodejs
       - apt install -y npm
       - npm install -g pnpm
   pre_build:
@@ -15,7 +15,7 @@ phases:
       #- npm run test
       # Remove all dependencies not needed for the Lambda deployment package (the packages from devDependencies in package.json)
       - git clone https://github.com/eliaszoo/docs.git
-      - cp -rf docs/_docs. ./docs
+      - cp -rf docs/_docs/. _docs/
   build:
     commands:
       # Use AWS SAM to package the application by using AWS CloudFormation
