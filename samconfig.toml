@@ -1,9 +1,10 @@
 version = 0.1
+
 [default.deploy.parameters]
-stack_name = "spreading"
+stack_name = "test"
 resolve_s3 = true
-s3_prefix = "spreading"
-region = "ap-east-1"
+s3_prefix = "zego-spreading"
+region = "ap-southeast-1"
 confirm_changeset = false
 capabilities = "CAPABILITY_IAM"
 disable_rollback = true
