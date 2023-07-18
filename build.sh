@@ -2,6 +2,7 @@
 
 Rebuild="Rebuild"
 echo "BuildType: $BuildType"
+echo "Rebuild: $Rebuild"
 if [ $BuildType == $Rebuild ]
 then # 全量
     echo "Rebuild"
