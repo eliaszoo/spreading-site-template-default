@@ -21,6 +21,7 @@ def rename(site):
         json.dump(data, file, indent=4)
 
 def rename_stack(site):
+    stack = site.replace("_", "-")
     with open('samconfig.toml', 'r') as f:
         data = toml.load(f)
 
