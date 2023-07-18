@@ -1,6 +1,7 @@
 #!/bin/bash
 
-if [ $Rebuilt == true ]
+Rebuild="Rebuild"
+if [ $BuildType == "$Rebuild" ]
 then # 全量
     python3 build.py -w $Workspace -s $Site -b $BaseDomain -t $Token
 else # 增量
