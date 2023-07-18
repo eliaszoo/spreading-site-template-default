@@ -73,7 +73,7 @@ if __name__ == '__main__':
         name = proj
         subprocess.call(["mkdir", "-p", "docs/"+name])
         subprocess.call(["cp", "-r", name + "/docs", "docs/" + name])
-        subprocess.call(["aws", "s3", "cp", name + "/docs", "s3://zego-spreading/"+workspace+"/"+name+"/docs", "--recursive"])
+        subprocess.call(["aws", "s3", "cp", name + "/docs", "s3://spreading-test/"+workspace+"/"+name+"/docs", "--recursive"])
         
     # rename
     rename(workspace+"_"+site)

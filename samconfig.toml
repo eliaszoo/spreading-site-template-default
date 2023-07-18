@@ -1,7 +1,7 @@
 version = 0.1
 
 [default.deploy.parameters]
-stack_name = "test"
+stack_name = "spreading_workspace_site1"
 resolve_s3 = true
 s3_prefix = "zego-spreading"
 region = "ap-southeast-1"
