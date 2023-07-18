@@ -2,7 +2,7 @@
 
 Rebuild="Rebuild"
 echo "BuildType: $BuildType"
-if [ $BuildType == "$Rebuild" ]
+if [ $BuildType == $Rebuild ]
 then # 全量
     echo "Rebuild"
     python rebuild.py -w $Workspace -s $Site -b $BaseDomain -t $Token
