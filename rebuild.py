@@ -28,7 +28,7 @@ def rename_stack(site):
     # 修改内容
     print(data)
     #data['default.deploy.parameters.stack_name'] = site
-    data['default']['deploy']['parameters']['stack_name'] = site
+    data['default']['deploy']['parameters']['stack_name'] = stack
     print(data)
 
     # 保存修改后的Toml文件
