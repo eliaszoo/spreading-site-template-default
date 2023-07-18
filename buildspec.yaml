@@ -7,7 +7,7 @@ phases:
       #- pip3 install aws-sam-cli
       #- apt install -y nodejs
       #- apt install -y npm
-      - pip install pytoml
+      - pip3 install pytoml
       - npm install -g pnpm
   pre_build:
     commands:
