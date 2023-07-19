@@ -45,7 +45,7 @@ if __name__ == '__main__':
     
     for o, a in opts:
         if o in ("-w", "--workspace"):
-            workspace = a
+            workspace = "spreading_"+a
         elif o in ("-s", "--site"):
             site = a
         elif o in ("-b", "--base-domain"):
