@@ -52,7 +52,7 @@ if __name__ == '__main__':
         update_files = json.loads(files)
         print(update_files)
         for file in update_files:
-            subprocess.call(["aws", "s3", "cp", workspace + "_" + project + file["path"], "s3://spreading-test/"+workspace+"/"+workspace + "_" + project+file["path"]])
+            subprocess.call(["aws", "s3", "cp", workspace + "_" + project + file["path"], "s3://zego-spreading/"+workspace+"/"+workspace + "_" + project+file["path"]])
 
         report_build_status(callback_url, 0, "success")
     except Exception as e:
