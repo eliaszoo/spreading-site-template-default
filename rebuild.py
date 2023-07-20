@@ -4,7 +4,6 @@ import json
 import subprocess
 import os
 import getopt, sys
-import toml
 
 def clone(location, token):
     location = location.replace("https://", "https://" + token + "@")
@@ -19,21 +18,6 @@ def rename(site):
 
     with open("package.json", 'w') as file:
         json.dump(data, file, indent=4)
-
-def rename_stack(site):
-    stack = site.replace("_", "-")
-    with open('samconfig.toml', 'r') as f:
-        data = toml.load(f)
-
-    # 修改内容
-    print(data)
-    #data['default.deploy.parameters.stack_name'] = site
-    data['default']['deploy']['parameters']['stack_name'] = stack
-    print(data)
-
-    # 保存修改后的Toml文件
-    with open('samconfig.toml', 'w') as f:
-        toml.dump(data, f)
 
 def report_build_status(url, code, msg):
     print("code: " + str(code) + ", msg: " + msg)
@@ -86,7 +70,7 @@ if __name__ == '__main__':
             
         # rename
         rename(workspace+"_"+site)
-        rename_stack(workspace+"_"+site)
+        #rename_stack(workspace+"_"+site)
 
         # build
         subprocess.call(["sam", "build"])

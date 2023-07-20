@@ -7,8 +7,8 @@ phases:
       #- pip3 install aws-sam-cli
       #- apt install -y nodejs
       #- apt install -y npm
-      - pip3 install toml
-      - npm install -g pnpm
+      #- pip3 install toml
+      #- npm install -g pnpm
   pre_build:
     commands:
       # Discover and run unit tests in the '__tests__' directory
