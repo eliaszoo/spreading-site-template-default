@@ -90,7 +90,7 @@ if __name__ == '__main__':
 
         # build
         subprocess.call(["sam", "build"])
-        subprocess.call(["sam", "deploy"])
+        subprocess.call(["sam", "deploy", "--stack-name", workspace+"_"+site, "--s3-bucket", "zego-spreading"])
         report_build_status(callback_url, 0, "success")
     except Exception as e:
         report_build_status(callback_url, 500, str(e))
