@@ -23,6 +23,7 @@ Resources:
           AWS_LWA_ENABLE_COMPRESSION: true
           RUST_LOG: info
           PORT: 8000
+          MY_BUCKET_NAME: zego-spreading
       Layers:
         - !Sub arn:aws:lambda:${AWS::Region}:753240598075:layer:LambdaAdapterLayerX86:16
       Events:
