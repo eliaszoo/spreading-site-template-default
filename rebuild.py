@@ -35,11 +35,15 @@ def rename_stack(site):
     with open('samconfig.toml', 'w') as f:
         toml.dump(data, f)
 
+def report_build_status(url, code, msg):
+    print("code: " + str(code) + ", msg: " + msg)
+    subprocess.call(["curl", "-X", "POST", "-H", "Content-Type: application/json", "-d", '{"code":'+str(code)+',"msg":"'+msg+'"}', url])
+
 if __name__ == '__main__':
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "w:s:b:t:", ["workspace=", "site=", "base-domain=", "token="])
+        opts, args = getopt.getopt(sys.argv[1:], "w:s:b:t:c:", ["workspace=", "site=", "base-domain=", "token=", "callback-url="])
     except getopt.GetoptError as err:
-        print("usage -w <workspace> -s <site> -b <base-domain> -t <token>")
+        print("usage -w <workspace> -s <site> -b <base-domain> -t <token> -c <callback-url>")
         print(err)
         sys.exit(2)
     
@@ -52,35 +56,42 @@ if __name__ == '__main__':
             base = a
         elif o in ("-t", "--token"):
             token = a
+        elif o in ("-c", "--callback-url"):
+            callback_url = a
         else:
             assert False, "unhandled option"
 
 
-    clone(base + workspace, token)
-    with open(workspace+"/sites/site.json", encoding="utf-8") as f:
-        list = json.load(f)
+    try:
+        clone(base + workspace, token)
+        with open(workspace+"/sites/site.json", encoding="utf-8") as f:
+            list = json.load(f)
 
-    print(list)
-    # clone projects
-    projList = []
-    for item in list:
-        if item["id"] == site:
-            for proj in item["projects"]:
-                name = workspace + "_" + proj
-                projList.append(name)
-                clone(base + name, token)
-    
-    # cp docs
-    for proj in projList:
-        name = proj
-        subprocess.call(["mkdir", "-p", "docs/"+name])
-        subprocess.call(["cp", "-r", name + "/docs", "docs/" + name])
-        subprocess.call(["aws", "s3", "cp", name + "/docs", "s3://spreading-test/"+workspace+"/"+name+"/docs", "--recursive"])
+        print(list)
+        # clone projects
+        projList = []
+        for item in list:
+            if item["id"] == site:
+                for proj in item["projects"]:
+                    name = workspace + "_" + proj
+                    projList.append(name)
+                    clone(base + name, token)
         
-    # rename
-    rename(workspace+"_"+site)
-    rename_stack(workspace+"_"+site)
+        # cp docs
+        for proj in projList:
+            name = proj
+            subprocess.call(["mkdir", "-p", "docs/"+name])
+            subprocess.call(["cp", "-r", name + "/docs", "docs/" + name])
+            subprocess.call(["aws", "s3", "cp", name + "/docs", "s3://spreading-test/"+workspace+"/"+name+"/docs", "--recursive"])
+            
+        # rename
+        rename(workspace+"_"+site)
+        rename_stack(workspace+"_"+site)
 
-    # build
-    subprocess.call(["sam", "build"])
-    subprocess.call(["sam", "deploy"])
+        # build
+        subprocess.call(["sam", "build"])
+        subprocess.call(["sam", "deploy"])
+        report_build_status(callback_url, 0, "success")
+    except Exception as e:
+        report_build_status(callback_url, 500, str(e))
+        sys.exit(2)

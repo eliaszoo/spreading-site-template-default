@@ -11,13 +11,16 @@ def clone(location, token):
     subprocess.call(["git", "clone", location, "--recurse-submodules", "--depth", "1"])
     print("clone "+ location)
 
+def report_build_status(url, code, msg):
+    print("code: " + str(code) + ", msg: " + msg)
+    subprocess.call(["curl", "-X", "POST", "-H", "Content-Type: application/json", "-d", '{"code":'+str(code)+',"msg":"'+msg+'"}', url])
 
 if __name__ == '__main__':
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "w:s:p:b:t:f:o:", 
-                                   ["workspace=", "site=", "project=", "base-domain=", "token=", "files=", "output-folder="])
+        opts, args = getopt.getopt(sys.argv[1:], "w:s:p:b:t:f:o:c:", 
+                                   ["workspace=", "site=", "project=", "base-domain=", "token=", "files=", "output-folder=", "callback-url="])
     except getopt.GetoptError as err:
-        print("usage -w <workspace> -s <site> -p <project> -b <base-domain> -t <token>, -f <files>, -o <output-folder>")
+        print("usage -w <workspace> -s <site> -p <project> -b <base-domain> -t <token> -f <files> -o <output-folder> -c <callback-url>")
         print(err)
         sys.exit(2)
     
@@ -37,13 +40,21 @@ if __name__ == '__main__':
             files = a
         elif o in ("-o", "--output-folder"):
             output_folder = a
+        elif o in ("-c", "--callback-url"):
+            callback_url = a
 
     print(files)
 
-    # clone project
-    clone(base + workspace + "_" + project, token)
+    try:
+        # clone project
+        clone(base + workspace + "_" + project, token)
 
-    update_files = json.loads(files)
-    print(update_files)
-    for file in update_files:
-        subprocess.call(["aws", "s3", "cp", workspace + "_" + project + file["path"], "s3://spreading-test/"+workspace+"/"+workspace + "_" + project+file["path"]])
+        update_files = json.loads(files)
+        print(update_files)
+        for file in update_files:
+            subprocess.call(["aws", "s3", "cp", workspace + "_" + project + file["path"], "s3://spreading-test/"+workspace+"/"+workspace + "_" + project+file["path"]])
+
+        report_build_status(callback_url, 0, "success")
+    except Exception as e:
+        report_build_status(callback_url, 500, str(e))
+        sys.exit(2)
