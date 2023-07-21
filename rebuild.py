@@ -93,7 +93,7 @@ if __name__ == '__main__':
                 subprocess.call(["mkdir", "-p", target])
                 subprocess.call(["cp", "-r", workspace + "_" + name +"/" + branch, target])
             subprocess.call(["aws", "s3", "rm", "s3://zego-spreading/"+workspace+"/"+name, "--recursive"])
-            subprocess.call(["aws", "s3", "cp", "./docs/"+name, "s3://zego-spreading/"+workspace+"/"+name, "--recursive"])
+            subprocess.call(["aws", "s3", "cp", "./docs/"+name, "s3://zego-spreading/"+workspace+"/docs/"+name, "--recursive"])
                 
         # rename
         rename(workspace+"_"+site)
