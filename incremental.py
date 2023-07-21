@@ -7,27 +7,27 @@ import getopt, sys
 
 def clone(location, token):
     location = location.replace("https://", "https://" + token + "@")
-    print(location)
     subprocess.call(["git", "clone", location, "--recurse-submodules", "--depth", "1"])
-    print("clone "+ location)
 
-def report_build_status(url, code, msg):
+def report_build_status(url, code, msg, workspace, site):
     print("code: " + str(code) + ", msg: " + msg)
-    subprocess.call(["curl", "-X", "POST", "-H", "Content-Type: application/json", "-d", '{"code":'+str(code)+',"msg":"'+msg+'"}', url])
+    body = '{"code":'+str(code)+',"msg":"'+msg+'","workspace":'+str(workspace)+',"site":'+str(site)+'}'
+    subprocess.call(["curl", "-X", "POST", "-H", "Content-Type: application/json", "-d", body, url])   
 
 if __name__ == '__main__':
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "w:s:p:b:t:f:o:c:", 
-                                   ["workspace=", "site=", "project=", "base-domain=", "token=", "files=", "output-folder=", "callback-url="])
+        opts, args = getopt.getopt(sys.argv[1:], "w:s:p:b:t:f:o:c:l:", 
+                                   ["workspace=", "site=", "project=", "base-domain=", "token=", "files=", "output-folder=", "callback-url=", "structure-copy-list="])
     except getopt.GetoptError as err:
-        print("usage -w <workspace> -s <site> -p <project> -b <base-domain> -t <token> -f <files> -o <output-folder> -c <callback-url>")
+        print("usage -w <workspace> -s <site> -p <project> -b <base-domain> -t <token> -f <files> -o <output-folder> -c <callback-url> -l <structure-copy-list>")
         print(err)
         sys.exit(2)
     
-    print(opts)
+    #print(opts)
     for o, a in opts:
         if o in ("-w", "--workspace"):
             workspace = "spreading_"+a
+            i_ws = a
         elif o in ("-s", "--site"):
             site = a
         elif o in ("-b", "--base-domain"):
@@ -42,6 +42,8 @@ if __name__ == '__main__':
             output_folder = a
         elif o in ("-c", "--callback-url"):
             callback_url = a
+        elif o in ("-l", "--structure-copy-list"):
+            structure_copy_list = a
 
     print(files)
 
@@ -51,10 +53,23 @@ if __name__ == '__main__':
 
         update_files = json.loads(files)
         print(update_files)
-        for file in update_files:
-            subprocess.call(["aws", "s3", "cp", workspace + "_" + project + file["path"], "s3://zego-spreading/"+workspace+"/"+workspace + "_" + project+file["path"]])
+        # copy files 2 s3
+        for version, files in update_files.items():
+            s_path = workspace + "_" + project + "/docs/"+version+"/"
+            t_path = workspace+"/"+workspace + "_" + project + "/"+"/"+version+"/"
+            for file in files:
+                subprocess.call(["aws", "s3", "cp", s_path + file, "s3://zego-spreading/"+t_path+file])
 
-        report_build_status(callback_url, 0, "success")
+        # 处理structure文件
+        structure_list = json.loads(structure_copy_list)
+        for version, data in structure_list.items():
+            structure_file = workspace + "_" + project + "/docs/"+version+"/structure.collections"
+            for toc in data:
+                
+
+
+
+        report_build_status(callback_url, 0, "success", i_ws, site)
     except Exception as e:
-        report_build_status(callback_url, 500, str(e))
+        report_build_status(callback_url, 500, str(e), i_ws, site)
         sys.exit(2)

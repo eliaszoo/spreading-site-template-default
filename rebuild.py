@@ -11,6 +11,25 @@ def clone(location, token):
     subprocess.call(["git", "clone", location, "--recurse-submodules", "--depth", "1"])
     print("clone "+ location)
 
+# clone所有分支到本地
+def clone_all_branch(location, token, dir):
+    print("dir:"+dir)
+    location = location.replace("https://", "https://" + token+"@")
+    subprocess.run(['git', 'clone', '--bare', location, dir], check=True)
+
+    # 获取远程分支列表
+    output = subprocess.check_output(['git', 'ls-remote', '--heads', location]).decode().strip()
+    branch_list = [line.split('\t')[1].split('refs/heads/')[1] for line in output.split('\n')]
+    print(branch_list)
+
+    # 拉取每个分支到不同的目录
+    for branch in branch_list:
+        branch_dir = f'{branch}'
+        print(branch_dir)
+        subprocess.run(['git', 'worktree', 'add', branch_dir, branch], cwd=dir, check=True)
+
+    return branch_list
+
 def rename(site):
     with open("package.json", 'r') as file:
         data = json.load(file)
@@ -19,9 +38,10 @@ def rename(site):
     with open("package.json", 'w') as file:
         json.dump(data, file, indent=4)
 
-def report_build_status(url, code, msg):
+def report_build_status(url, code, msg, workspace, site):
     print("code: " + str(code) + ", msg: " + msg)
-    subprocess.call(["curl", "-X", "POST", "-H", "Content-Type: application/json", "-d", '{"code":'+str(code)+',"msg":"'+msg+'"}', url])
+    body = '{"code":'+str(code)+',"msg":"'+msg+'","workspace":'+str(workspace)+',"site":'+str(site)+'}'
+    subprocess.call(["curl", "-X", "POST", "-H", "Content-Type: application/json", "-d", body, url])
 
 if __name__ == '__main__':
     try:
@@ -34,6 +54,7 @@ if __name__ == '__main__':
     for o, a in opts:
         if o in ("-w", "--workspace"):
             workspace = "spreading_"+a
+            i_ws = a
         elif o in ("-s", "--site"):
             site = a
         elif o in ("-b", "--base-domain"):
@@ -54,28 +75,35 @@ if __name__ == '__main__':
         print(list)
         # clone projects
         projList = []
+        projBranchs = {}
         for item in list:
             if item["id"] == site:
                 for proj in item["projects"]:
                     name = workspace + "_" + proj
-                    projList.append(name)
-                    clone(base + name, token)
+                    projList.append(proj)
+                    branchs = clone_all_branch(base + name, token, "./"+name)
+                    projBranchs[proj] = branchs
         
         # cp docs
+        print(projList)
         for proj in projList:
             name = proj
-            subprocess.call(["mkdir", "-p", "docs/"+name])
-            subprocess.call(["cp", "-r", name + "/docs", "docs/" + name])
-            subprocess.call(["aws", "s3", "cp", name + "/docs", "s3://zego-spreading/"+workspace+"/"+name+"/docs", "--recursive"])
-            
+            for branch in projBranchs[name]:
+                target = "docs/"+name+"/"
+                subprocess.call(["mkdir", "-p", target])
+                subprocess.call(["cp", "-r", workspace + "_" + name +"/" + branch, target])
+            subprocess.call(["aws", "s3", "rm", "s3://zego-spreading/"+workspace+"/"+name, "--recursive"])
+            subprocess.call(["aws", "s3", "cp", "./docs/"+name, "s3://zego-spreading/"+workspace+"/"+name, "--recursive"])
+                
         # rename
         rename(workspace+"_"+site)
         #rename_stack(workspace+"_"+site)
 
         # build
         subprocess.call(["sam", "build"])
-        subprocess.call(["sam", "deploy", "--stack-name", workspace+"_"+site, "--s3-bucket", "zego-spreading"])
-        report_build_status(callback_url, 0, "success")
+        stack = workspace.replace("_", "-")+"-"+site
+        subprocess.call(["sam", "deploy", "--stack-name", stack, "--s3-bucket", "zego-spreading"])
+        report_build_status(callback_url, 0, "success", i_ws, site)
     except Exception as e:
-        report_build_status(callback_url, 500, str(e))
+        report_build_status(callback_url, 500, str(e), i_ws, site)
         sys.exit(2)
