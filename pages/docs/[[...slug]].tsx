@@ -1,10 +1,10 @@
 import { getMDXComponent } from "mdx-bundler/client";
 import { useMemo } from "react";
-import { getAllDocsInfo, getDocData } from "../../lib/docs";
+import { getAllSlugs, readDoc } from "../../lib/docs";
 import PreviewLayout from "../../components/preview-layout";
 
 export const getStaticProps = async ({ params }) => {
-  const postData = await getDocData(params.slug);
+  const postData = await readDoc(params.slug);
   return {
     props: {
       ...postData,
@@ -14,8 +14,7 @@ export const getStaticProps = async ({ params }) => {
 };
 
 export async function getStaticPaths() {
-  const allDocsInfo = getAllDocsInfo();
-  const paths = allDocsInfo.mdxSlugs;
+  const paths = await getAllSlugs();
   return {
     paths,
     fallback: false,

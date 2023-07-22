@@ -1,0 +1,16 @@
+{
+    "id": "jfew3ewfew",
+    "name": "My Site",
+    "title": "xxx",
+    "icon": "path/start/from/site/folder/to/icon",
+    "icon_redirect_url": "https://xxxx.spreading.ai",
+    "favicon": "path/start/from/site/folder/to/favicon",
+    "projects": [
+        {
+            "id": "15",
+            "name": "test project7"
+        }
+    ],
+    "domain": "my_site.spreading.ai",
+    "doc_url": "http://localhost:8000/3/docs/"
+}
