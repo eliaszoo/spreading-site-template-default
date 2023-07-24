@@ -3,6 +3,6 @@ version = 0.1
 [default.deploy.parameters]
 region = "ap-southeast-1"
 confirm_changeset = false
-capabilities = "CAPABILITY_IAM"
+capabilities = ""
 disable_rollback = true
 image_repositories = []
