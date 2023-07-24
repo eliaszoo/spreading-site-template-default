@@ -71,6 +71,7 @@ if __name__ == '__main__':
         clone(base + workspace, token)
         with open(workspace+"/sites/site.json", encoding="utf-8") as f:
             list = json.load(f)
+        subprocess.call(["cp", workspace+"/sites/site.json", "."])
 
         print(list)
         # clone projects

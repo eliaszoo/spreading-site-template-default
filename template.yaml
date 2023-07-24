@@ -36,5 +36,5 @@ Resources:
 Outputs:
   NextFunctionURL:
     Description: "API Gateway endpoint URL for Next.js"
-    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/"
+    Value: !Sub "https://${SubDomain}.spreading.io/"
 

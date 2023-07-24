@@ -33,6 +33,22 @@ def report_build_status(url, code, msg, workspace, site):
     body = '{"code":'+str(code)+',"msg":"'+msg+'","workspace":'+str(workspace)+',"site":'+str(site)+'}'
     subprocess.call(["curl", "-X", "POST", "-H", "Content-Type: application/json", "-d", body, url])   
 
+def get_toc(structure, toc_id):
+    for file in structure:
+        if "toc" in file and file["id"] == toc_id:
+            return file
+    return {}
+
+def remove_node(structure, toc):
+    for file in toc:
+        if "toc" in file:
+            remove_node(get_toc(file["id"]), file["toc"])
+        else:
+            for item in structure:
+                if item["uri"] == file["uri"]:
+                    structure.remove(item)
+
+
 if __name__ == '__main__':
     try:
         opts, args = getopt.getopt(sys.argv[1:], "w:s:p:b:t:f:o:c:l:", 
@@ -83,11 +99,14 @@ if __name__ == '__main__':
         structure_list = json.loads(structure_copy_list)
         for version, data in structure_list.items():
             structure_file = workspace + "_" + project + "/docs/"+version+"/structure.collections"
-            for item in data:
-
-
-
-
+            structure = json.loads(structure_file)
+            remove_node(structure, data)
+            with open(structure_file, 'w') as file:
+                json.dump(structure, file, indent=4)
+            
+            t_path = workspace+"/"+workspace + "_" + project + "/"+"/"+version+"/structure.collections"
+            subprocess.call(["aws", "s3", "cp", structure_file, "s3://zego-spreading/"+t_path])
+        
         report_build_status(callback_url, 0, "success", i_ws, site)
     except Exception as e:
         report_build_status(callback_url, 500, str(e), i_ws, site)
