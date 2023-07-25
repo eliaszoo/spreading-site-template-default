@@ -4,7 +4,7 @@ install:
 	pnpm install
 
 build:
-	pnpm build
+	pnpm run build
 
 artifacts:
 	# Copy artifacts for deployment
