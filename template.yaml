@@ -36,6 +36,17 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       StageName: prod
+      DefinitionBody:
+        openapi: 3.0.1
+        info:
+          title: My API
+          version: '1.0'
+        paths:
+          /:
+            get:
+              responses:
+                '200':
+                description: OK
       Domain:
         DomainName: spreading.io
         CertificateArn: arn:aws:acm:ap-southeast-1:547537176727:certificate/3737d1ce-54b7-411f-9e2b-659781a8e7a8
