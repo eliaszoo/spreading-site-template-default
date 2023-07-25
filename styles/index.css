@@ -34,6 +34,12 @@ body {
   padding: 10px;
   overflow: auto;
 }
+.preview-toc {
+  width: 350px;
+  border: none;
+  padding: 10px;
+  overflow: auto;
+}
 .preview-content {
   padding: 10px 40px;
   flex: 1;
