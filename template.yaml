@@ -8,6 +8,15 @@ Globals:
     Timeout: 2
 
 Resources:
+  NextApiGateWay:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      Domain:
+        DomainName: spreading.io
+        CertificateArn: arn:aws:acm:ap-southeast-1:547537176727:certificate/3737d1ce-54b7-411f-9e2b-659781a8e7a8
+        BasePath: /
+        EndpointConfiguration: REGIONAL
   NextFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -28,28 +37,12 @@ Resources:
       Layers:
         - !Sub arn:aws:lambda:${AWS::Region}:753240598075:layer:LambdaAdapterLayerX86:16
       Events:
-        HttpEvent:
-          Type: HttpApi
+        Root:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NextApiGateWay
+            Path: /
+            Method: ANY
     Metadata:
       BuildMethod: makefile
-  NextApiGateWay:
-    Type: AWS::Serverless::Api
-    Properties:
-      StageName: prod
-      DefinitionBody:
-        openapi: 3.0.1
-        info:
-          title: My API
-          version: '1.0'
-        paths:
-          /:
-            get:
-              responses:
-                '200':
-                description: OK
-      Domain:
-        DomainName: spreading.io
-        CertificateArn: arn:aws:acm:ap-southeast-1:547537176727:certificate/3737d1ce-54b7-411f-9e2b-659781a8e7a8
-        BasePath: /
-        EndpointConfiguration: REGIONAL
 
