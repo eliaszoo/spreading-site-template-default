@@ -9,7 +9,7 @@ Globals:
 
 Resources:
   NextApiGateWay:
-    Type: AWS::Serverless::HttpApi
+    Type: AWS::Serverless::Api
     Properties:
       StageName: prod
       Domain:
@@ -38,7 +38,7 @@ Resources:
         - !Sub arn:aws:lambda:${AWS::Region}:753240598075:layer:LambdaAdapterLayerX86:16
       Events:
         Root:
-          Type: HttpApi
+          Type: Api
           Properties:
             RestApiId: !Ref NextApiGateWay
             Path: /
