@@ -66,7 +66,7 @@ const getChildrenFromToc = (prefixKey: string, structureToc: any) => {
   return childs
 }
 
-const getStructureFullTreeData = async () => {
+const getStructureFullTreeData = async (isPreview) => {
   const tree = [];
   const projectNames = await getProjectNames();
   for (const projectName of projectNames) {
@@ -76,7 +76,7 @@ const getStructureFullTreeData = async () => {
       key: projectName,
       children: []
     }
-    const versions = await getVersions(projectName);
+    const versions = await getVersions(projectName, isPreview);
     for (const version of versions) {
       const versionObj = {
         title: version,
@@ -85,7 +85,7 @@ const getStructureFullTreeData = async () => {
         children: []
       }
 
-      const structure = await getStructure(projectName, version);
+      const structure = await getStructure(projectName, version, isPreview);
       const collectionGroups = structure.collection_group
       for (const group of collectionGroups) {
         const languageObj = {
@@ -102,11 +102,12 @@ const getStructureFullTreeData = async () => {
           const collection = structure.collections.find((c: { id: string; }) => c.id === platform) || {};
           // Don't show collection name if there is only one
           const prefixCollectionName = structure.collections.length > 1 ? "/" + collection.name : "";
+          const prefixIsPreview = isPreview ? "/preview/" : "/"
           const platformObj = {
             title: collection.name,
             type: "folder",
             key: `${projectName}/${version}/${group.key}/${collection.name}`,
-            children: getChildrenFromToc(projectName + "/" + version + prefixGroupName + prefixCollectionName, collection.toc)
+            children: getChildrenFromToc(projectName + prefixIsPreview + version + prefixGroupName + prefixCollectionName, collection.toc)
           }
 
           languageObj.children.push(platformObj)
@@ -127,7 +128,8 @@ const getStructureFullTreeData = async () => {
 
 export default async function handler(req, res) {
   try {
-    const fullTreeData = await getStructureFullTreeData();
+    const {isPreview} = req.query;
+    const fullTreeData = await getStructureFullTreeData(isPreview === "true");
     res.status(200).send({ result: fullTreeData })
   } catch (err) {
     res.status(500).send({ error: 'failed to fetch data' })
