@@ -95,17 +95,26 @@ if __name__ == '__main__':
         with open("site.json", 'w') as file:
             json.dump(list, file, indent=4)
 
-        # cp docs
         print(projList)
+        # 写projects.json
+        subprocess.call(["mkdir", "-p", "docs"])
+        with open("docs/projects.json", 'w') as file:
+            json.dump(projList, file, indent=4)
+
+         # cp docs
         for proj in projList:
             name = proj
             for branch in projBranchs[name]:
                 target = "docs/"+name+"/"
                 subprocess.call(["mkdir", "-p", target])
                 subprocess.call(["cp", "-r", workspace + "_" + name +"/" + branch, target])
+            # 写version
+            with open("docs/"+name+"/versions.json", 'w') as file:
+                json.dump(projBranchs[name], file, indent=4)
+
             subprocess.call(["aws", "s3", "rm", "s3://zego-spreading/"+workspace+"/"+name, "--recursive"])
             subprocess.call(["aws", "s3", "cp", "./docs/"+name, "s3://zego-spreading/"+workspace+"/docs/"+name, "--recursive", "--acl", "public-read"])
-                
+
         # rename
         rename(workspace+"_"+site)
         #rename_stack(workspace+"_"+site)

@@ -9,7 +9,7 @@ Globals:
 
 Resources:
   NextApiGateWay:
-    Type: AWS::Serverless::Api
+    Type: AWS::Serverless::HttpApi
     Properties:
       StageName: prod
       Domain:
