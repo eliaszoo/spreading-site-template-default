@@ -103,8 +103,8 @@ if __name__ == '__main__':
                 target = "docs/"+name+"/"
                 subprocess.call(["mkdir", "-p", target])
                 subprocess.call(["cp", "-r", workspace + "_" + name +"/" + branch, target])
-            subprocess.call(["aws", "s3", "rm", "s3://spreading-test/"+workspace+"/"+name, "--recursive"])
-            subprocess.call(["aws", "s3", "cp", "./docs/"+name, "s3://spreading-test/"+workspace+"/docs/"+name, "--recursive", "--acl", "public-read"])
+            subprocess.call(["aws", "s3", "rm", "s3://zego-spreading/"+workspace+"/"+name, "--recursive"])
+            subprocess.call(["aws", "s3", "cp", "./docs/"+name, "s3://zego-spreading/"+workspace+"/docs/"+name, "--recursive", "--acl", "public-read"])
                 
         # rename
         rename(workspace+"_"+site)
@@ -113,7 +113,7 @@ if __name__ == '__main__':
         # build
         subprocess.call(["sam", "build"])
         stack = workspace.replace("_", "-")+"-"+site
-        subprocess.call(["sam", "deploy", "--stack-name", stack, "--s3-bucket", "spreading-test"])
+        subprocess.call(["sam", "deploy", "--stack-name", stack, "--s3-bucket", "zego-spreading"])
         report_build_status(callback_url, 0, "success", i_ws, site)
     except Exception as e:
         report_build_status(callback_url, 500, str(e), i_ws, site)
