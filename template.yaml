@@ -32,10 +32,13 @@ Resources:
           Type: HttpApi
     Metadata:
       BuildMethod: makefile
-
-
-Outputs:
-  NextFunctionURL:
-    Description: "API Gateway endpoint URL for Next.js"
-    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/"
+  NextApiGateWay:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      Domain:
+        DomainName: spreading.io
+        CertificateArn: arn:aws:acm:ap-southeast-1:547537176727:certificate/3737d1ce-54b7-411f-9e2b-659781a8e7a8
+        BasePath: /
+        EndpointConfiguration: REGIONAL
 
