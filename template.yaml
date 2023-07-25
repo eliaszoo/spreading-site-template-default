@@ -17,6 +17,10 @@ Resources:
         CertificateArn: arn:aws:acm:ap-southeast-1:547537176727:certificate/3737d1ce-54b7-411f-9e2b-659781a8e7a8
         BasePath: /
         EndpointConfiguration: REGIONAL
+      DefinitionBody:
+        swagger: "2.0"
+        info:
+          title: My API
   NextFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -46,3 +50,7 @@ Resources:
     Metadata:
       BuildMethod: makefile
 
+Outputs:
+  MyCustomDomainName:
+    Value: !Ref NextApiGateWay
+    ExportName: test.spreading.io

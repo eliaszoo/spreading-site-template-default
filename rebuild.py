@@ -39,8 +39,8 @@ def rename(site):
         json.dump(data, file, indent=4)
 
 def report_build_status(url, code, msg, workspace, site):
-    print("code: " + str(code) + ", msg: " + msg)
     body = '{"code":'+str(code)+',"msg":"'+msg+'","workspace":'+str(workspace)+',"site":'+str(site)+'}'
+    print(body)
     subprocess.call(["curl", "-X", "POST", "-H", "Content-Type: application/json", "-d", body, url])
 
 if __name__ == '__main__':
@@ -71,20 +71,30 @@ if __name__ == '__main__':
         clone(base + workspace, token)
         with open(workspace+"/sites/site.json", encoding="utf-8") as f:
             list = json.load(f)
-        subprocess.call(["cp", workspace+"/sites/site.json", "."])
 
         print(list)
         # clone projects
         projList = []
         projBranchs = {}
+        domain = ""
         for item in list:
+            item["doc_url"] = "https://zego-spreading.s3.ap-southeast-1.amazonaws.com/" + workspace + "/docs"
             if item["id"] == site:
+                domain = item["domain"]
+                subprocess.call(["cp", "-r", workspace+"/sites/"+site+"/favicon.ico", "./public/favicon"])
                 for proj in item["projects"]:
                     name = workspace + "_" + proj
                     projList.append(proj)
                     branchs = clone_all_branch(base + name, token, "./"+name)
                     projBranchs[proj] = branchs
+        if domain == "":
+            report_build_status(callback_url, 500, "invalid domain", i_ws, site)
+            sys.exit(2)
         
+        # 写入本地site.json
+        with open("site.json", 'w') as file:
+            json.dump(list, file, indent=4)
+
         # cp docs
         print(projList)
         for proj in projList:
@@ -93,8 +103,8 @@ if __name__ == '__main__':
                 target = "docs/"+name+"/"
                 subprocess.call(["mkdir", "-p", target])
                 subprocess.call(["cp", "-r", workspace + "_" + name +"/" + branch, target])
-            subprocess.call(["aws", "s3", "rm", "s3://zego-spreading/"+workspace+"/"+name, "--recursive"])
-            subprocess.call(["aws", "s3", "cp", "./docs/"+name, "s3://zego-spreading/"+workspace+"/docs/"+name, "--recursive"])
+            subprocess.call(["aws", "s3", "rm", "s3://spreading-test/"+workspace+"/"+name, "--recursive"])
+            subprocess.call(["aws", "s3", "cp", "./docs/"+name, "s3://spreading-test/"+workspace+"/docs/"+name, "--recursive", "--acl", "public-read"])
                 
         # rename
         rename(workspace+"_"+site)
@@ -103,7 +113,7 @@ if __name__ == '__main__':
         # build
         subprocess.call(["sam", "build"])
         stack = workspace.replace("_", "-")+"-"+site
-        subprocess.call(["sam", "deploy", "--stack-name", stack, "--s3-bucket", "zego-spreading"])
+        subprocess.call(["sam", "deploy", "--stack-name", stack, "--s3-bucket", "spreading-test"])
         report_build_status(callback_url, 0, "success", i_ws, site)
     except Exception as e:
         report_build_status(callback_url, 500, str(e), i_ws, site)
