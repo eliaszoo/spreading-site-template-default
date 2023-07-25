@@ -13,7 +13,7 @@ Resources:
     Properties:
       StageName: prod
       Domain:
-        DomainName: spreading.io
+        DomainName: test.spreading.io
         CertificateArn: arn:aws:acm:ap-southeast-1:547537176727:certificate/3737d1ce-54b7-411f-9e2b-659781a8e7a8
         BasePath: /
         EndpointConfiguration: REGIONAL
@@ -49,8 +49,3 @@ Resources:
             Method: ANY
     Metadata:
       BuildMethod: makefile
-
-Outputs:
-  MyCustomDomainName:
-    Value: !Ref NextApiGateWay
-    ExportName: test.spreading.io
