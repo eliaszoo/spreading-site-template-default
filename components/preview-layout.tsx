@@ -57,22 +57,7 @@ const PreviewLayout = ({ preview, children, slug, frontmatter }: Props) => {
     const [breadcrumbData, setBreadcrumbData] = useState([])
 
     useEffect(() => {
-        // TODO @lihao 强制刷新/slug中有preview变更都要重新拉
-        let fullTreeData;
-        const temp = localStorage.getItem('fullTreeData');
-        // if (temp) {
-        //     fullTreeData = JSON.parse(temp);
-        //     console.log('localStorage fullTreeData', fullTreeData);
-        //     setFullTreeData(fullTreeData);
-        // } else {
-        //     fetch('/api/tree').then((response) => {
-        //         response.json().then(({ result }) => {
-        //             console.log('fetch fullTreeData', result);
-        //             localStorage.setItem('fullTreeData', JSON.stringify(result));
-        //             setFullTreeData(result);
-        //         });
-        //     });
-        // }
+        // TODO: Store data locally to the browser
 
         const url = new URL('/api/tree', window.location.href);
         url.searchParams.append("isPreview",isPreview ? "true" : "false")
