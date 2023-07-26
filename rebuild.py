@@ -79,10 +79,11 @@ if __name__ == '__main__':
         domain = ""
         for item in list:
             item["doc_url"] = "https://zego-spreading.s3.ap-southeast-1.amazonaws.com/" + workspace + "/docs"
-            if item["id"] == site:
+            if str(item["id"]) == site:
                 domain = item["domain"]
                 subprocess.call(["cp", "-r", workspace+"/sites/"+site+"/favicon.ico", "./public/favicon"])
                 for proj in item["projects"]:
+                    proj = str(proj)
                     name = workspace + "_" + proj
                     projList.append(proj)
                     branchs = clone_all_branch(base + name, token, "./"+name)
