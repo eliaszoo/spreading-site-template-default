@@ -83,6 +83,7 @@ if __name__ == '__main__':
                 domain = item["domain"]
                 subprocess.call(["cp", "-r", workspace+"/sites/"+site+"/favicon.ico", "./public/favicon"])
                 for proj in item["projects"]:
+                    proj = str(proj)
                     name = workspace + "_" + proj
                     projList.append(proj)
                     branchs = clone_all_branch(base + name, token, "./"+name)
