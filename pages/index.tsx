@@ -1,56 +1,38 @@
-import Container from "../components/container";
-import MoreStories from "../components/more-stories";
-import HeroPost from "../components/hero-post";
-import Intro from "../components/intro";
-import Layout from "../components/layout";
-import Head from "next/head";
-import { CMS_NAME } from "../lib/constants";
 import Post from "../interfaces/post";
-import { Text } from "listen-test-ui";
-type Props = {
-  allPosts: Post[];
-};
+import { useEffect } from "react";
+import Router from "next/router";
 
-export default function Index({ allPosts }: Props) {
-  const heroPost = undefined; //allPosts[0]
-  const morePosts = []; //allPosts.slice(1)
+export default function Index(props) {
+
+  useEffect(() => {
+    const isPreview = window.location.href.endsWith("/preview") || window.location.href.includes('/preview/');
+    const url = new URL('/api/tree', window.location.href);
+    url.searchParams.append("isPreview",isPreview ? "true" : "false")
+
+    const findFirstFileKey = (node) => {
+      if (node.children) {
+        return findFirstFileKey(node.children[0]);
+      } else if (node) {
+        return node.key
+      }
+      return undefined;
+    }
+    fetch(url).then((response) => {
+        response.json().then(({ result }) => {
+            console.log('fetch fullTreeData', result);
+            const firstProject = result[0]
+            const firstVersion = firstProject.children[0]
+            const firstLanguage = firstVersion && firstVersion.children[0]
+            const firstPlatform = firstLanguage && firstLanguage.children[0]
+            const firstFileKey = firstPlatform && findFirstFileKey(firstPlatform.children[0])
+            if (firstFileKey) {
+              Router.push("docs/" + firstFileKey);
+            }
+        });
+    });
+}, []);
+  
   return (
-    <>
-      <Layout>
-        <Text text="this is a test" />
-        <Head>
-          <title>{`Next.js Blog Example with ${CMS_NAME}`}</title>
-        </Head>
-        <Container>
-          <Intro />
-          {heroPost && (
-            <HeroPost
-              title={heroPost.title}
-              coverImage={heroPost.coverImage}
-              date={heroPost.date}
-              author={heroPost.author}
-              slug={heroPost.slug}
-              excerpt={heroPost.excerpt}
-            />
-          )}
-          {morePosts.length > 0 && <MoreStories posts={morePosts} />}
-        </Container>
-      </Layout>
-    </>
+    <div/>
   );
 }
-
-// export const getStaticProps = async () => {
-//   const allPosts = getAllPosts([
-//     'title',
-//     'date',
-//     'slug',
-//     'author',
-//     'coverImage',
-//     'excerpt',
-//   ])
-
-//   return {
-//     props: { allPosts },
-//   }
-// }
