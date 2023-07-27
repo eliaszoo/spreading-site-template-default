@@ -101,14 +101,14 @@ if __name__ == '__main__':
         # 处理structure文件
         structure_list = json.loads(structure_copy_list)
         for version, data in structure_list.items():
-            structure_file = workspace + "_" + project + "/docs/"+version+"/structure.collections"
+            structure_file = workspace + "_" + project + "/docs/"+version+"/structure.json"
             with open(structure_file, 'r') as file:
                 structure = json.load(file)
             remove_node(structure, data)
             with open(structure_file, 'w') as file:
                 json.dump(structure, file, indent=4)
             
-            t_path = workspace+"/"+workspace + "_" + project + "/"+"/"+version+"/structure.collections"
+            t_path = workspace+"/"+workspace + "_" + project + "/"+"/"+version+"/structure.json"
             subprocess.call(["aws", "s3", "cp", structure_file, "s3://zego-spreading/"+t_path, "--acl", "public-read"])
         
         report_build_status(callback_url, 0, "success", i_ws, site)
