@@ -6,12 +6,15 @@ const getChildrenFromToc = (prefixKey: string, structureToc: any, isPreview: Boo
   for (const item of structureToc) {
     if (item.toc) {
       const children = getChildrenFromToc(prefixKey + "/" + item.name, item.toc, isPreview)
-      childs.push({
-        title: item.name,
-        type: "folder",
-        key: prefixKey + "/" + item.name,
-        children
-      })
+      if (children.length > 0) {
+        childs.push({
+          title: item.name,
+          type: "folder",
+          key: prefixKey + "/" + item.name,
+          children
+        })
+      }
+
     } else {
       if (isPreview && item.attributes.status !== "Preview") continue;
       if (!isPreview && item.attributes.status !== "Published") continue;
