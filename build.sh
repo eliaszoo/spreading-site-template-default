@@ -8,5 +8,5 @@ then # 全量
     python rebuild.py -w $Workspace -s $Site -b $BaseDomain -t $Token -c $Callback
 else # 增量
     echo "Incremental"
-    python incremental.py  -w $Workspace -s $Site -b $BaseDomain -t $Token -p $Project -f "$UpdateFiles" -o "$OutputFolder"  -c $Callback
+    python incremental.py  -w $Workspace -s $Site -b $BaseDomain -t $Token -p $Project -f "$UpdateFiles" -o "$OutputFolder" -l "$StructureCopyList"  -c $Callback
 fi
