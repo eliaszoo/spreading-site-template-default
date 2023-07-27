@@ -75,15 +75,18 @@ if __name__ == '__main__':
         print(list)
         # clone projects
         projList = []
+        projNames = []
         projBranchs = {}
         domain = ""
         for item in list:
-            item["doc_url"] = "https://zego-spreading.s3.ap-southeast-1.amazonaws.com/" + workspace + "/docs"
+            item["doc_url"] = "https://zego-spreading.s3.ap-southeast-1.amazonaws.com/" + workspace + "/docs/"
             if str(item["id"]) == site:
                 domain = item["domain"]
+                siteJson = item
                 subprocess.call(["cp", "-r", workspace+"/sites/"+site+"/favicon.ico", "./public/favicon"])
                 for proj in item["projects"]:
-                    proj = str(proj)
+                    projNames.append(proj["name"])
+                    proj = str(proj["id"])
                     name = workspace + "_" + proj
                     projList.append(proj)
                     branchs = clone_all_branch(base + name, token, "./"+name)
@@ -94,24 +97,26 @@ if __name__ == '__main__':
         
         # 写入本地site.json
         with open("site.json", 'w') as file:
-            json.dump(list, file, indent=4)
+            json.dump(siteJson, file, indent=4)
 
         print(projList)
         # 写projects.json
         subprocess.call(["mkdir", "-p", "docs"])
         with open("docs/projects.json", 'w') as file:
-            json.dump(projList, file, indent=4)
+            json.dump(projNames, file, indent=4)
 
          # cp docs
         for proj in projList:
             name = proj
             for branch in projBranchs[name]:
                 target = "docs/"+name+"/"
-                subprocess.call(["mkdir", "-p", target])
-                subprocess.call(["cp", "-r", workspace + "_" + name +"/" + branch, target])
+                subprocess.call(["mkdir", "-p", target+"public", target+"preview"])
+                subprocess.call(["cp", "-r", workspace + "_" + name +"/" + branch, target+"public/"])
+                subprocess.call(["cp", "-r", workspace + "_" + name +"/" + branch, target+"preview/"])
             # 写version
-            with open("docs/"+name+"/versions.json", 'w') as file:
+            with open("docs/"+name+"/public/versions.json", 'w') as file:
                 json.dump(projBranchs[name], file, indent=4)
+            subprocess.call(["cp", "docs/"+name+"/public/versions.json", "docs/"+name+"/preview/"])
 
             subprocess.call(["aws", "s3", "rm", "s3://zego-spreading/"+workspace+"/"+name, "--recursive"])
             subprocess.call(["aws", "s3", "cp", "./docs/"+name, "s3://zego-spreading/"+workspace+"/docs/"+name, "--recursive", "--acl", "public-read"])
