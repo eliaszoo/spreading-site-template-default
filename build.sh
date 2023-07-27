@@ -14,5 +14,5 @@ then
 else # 增量
     echo "test"
     #aws apigatewayv2 create-domain-name --domain-name test11.spreading.io --domain-name-configurations CertificateArn=arn:aws:acm:ap-southeast-1:547537176727:certificate/3737d1ce-54b7-411f-9e2b-659781a8e7a8
-    aws apigatewayv2 create-api-mapping --domain-name test11.spreading.io --api-id 5ale2103dk --stage ""
+    aws apigatewayv2 create-api-mapping --domain-name test11.spreading.io --api-id 5ale2103dk --stage '$default'
 fi
