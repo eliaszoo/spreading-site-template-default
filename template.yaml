@@ -38,3 +38,6 @@ Outputs:
   NextFunctionURL:
     Description: "API Gateway endpoint URL for Next.js"
     Value: !Sub "${ServerlessHttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/"
+  ApiId:
+    Description: "Api Id"
+    Value: !Sub ${ServerlessHttpApi}
