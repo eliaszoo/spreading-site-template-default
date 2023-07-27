@@ -55,24 +55,10 @@ const PreviewLayout = ({ preview, children, slug, frontmatter }: Props) => {
     const [treeKey, setTreeKey] = useState(0);
     const [defaultURL, setDefaultURL] = useState([(slug as string[]).join('/')]);
     const [breadcrumbData, setBreadcrumbData] = useState([])
+    const [isExpand, setIsExpand] = useState(true);
 
     useEffect(() => {
-        // TODO @lihao 强制刷新/slug中有preview变更都要重新拉
-        let fullTreeData;
-        const temp = localStorage.getItem('fullTreeData');
-        // if (temp) {
-        //     fullTreeData = JSON.parse(temp);
-        //     console.log('localStorage fullTreeData', fullTreeData);
-        //     setFullTreeData(fullTreeData);
-        // } else {
-        //     fetch('/api/tree').then((response) => {
-        //         response.json().then(({ result }) => {
-        //             console.log('fetch fullTreeData', result);
-        //             localStorage.setItem('fullTreeData', JSON.stringify(result));
-        //             setFullTreeData(result);
-        //         });
-        //     });
-        // }
+        // TODO: Store data locally to the browser
 
         const url = new URL('/api/tree', window.location.href);
         url.searchParams.append("isPreview",isPreview ? "true" : "false")
@@ -226,11 +212,18 @@ const PreviewLayout = ({ preview, children, slug, frontmatter }: Props) => {
         });
     };
 
+    const scrollToTop = () => {
+        const scrollWrapDom = document.querySelector(".preview-content-wrap");
+        scrollWrapDom.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
     return (
         <>
             <div className="min-h-screen preview-screen">
                 <header className="preview-header">
-                    Spreading
+                    <div className="logo">
+                        <img src={"/icon_logo_spreading.png"} alt="spreading" />
+                    </div>
                     <Space wrap>
                         <Select
                             labelInValue
@@ -262,11 +255,27 @@ const PreviewLayout = ({ preview, children, slug, frontmatter }: Props) => {
                             treeData={currentCollectionDataObj}
                         />
                     </div>
-                    <div className="preview-content">
-                        <Breadcrumb items={breadcrumbData} />
-                        {children}
+                    <div className="preview-content-wrap">
+                        <div className="preview-content">
+                            <div className="article">
+                                <div className="article-breadcrumb"><Breadcrumb items={breadcrumbData} /></div>
+                                <div className="article-anchor-top">
+                                    {frontmatter.toc ? <>
+                                        <div className="drop-expand" onClick={() => setIsExpand(!isExpand)} >On this page</div>
+                                        <Anchor className={`drop-anchor ${isExpand ? "expand" : ""}`} items={formatFrontmatterTocForAntdAnchor(frontmatter.toc, 0)} affix={false} />
+                                    </> : null}
+                                </div>
+                                <div className="article-content">{children}</div>
+                            </div>
+                            <div className="article-anchor-right">
+                                {frontmatter.toc ? <>
+                                    <div className="drop-expand" onClick={() => setIsExpand(!isExpand)} >On this page</div>
+                                    <Anchor className={`drop-anchor ${isExpand ? "expand" : ""}`} items={formatFrontmatterTocForAntdAnchor(frontmatter.toc, 0)} affix={false} />
+                                    <div className="back-to-top" onClick={scrollToTop}>Back to top</div>
+                                </> : null}
+                            </div>
+                        </div>
                     </div>
-                    {frontmatter.toc ? <Anchor items={formatFrontmatterTocForAntdAnchor(frontmatter.toc, 0)} affix={false} className="preview-toc" /> : null}
                 </main>
             </div>
         </>

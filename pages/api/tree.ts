@@ -1,55 +1,24 @@
-import fs from "fs";
-import path from "path";
 import { getProjectNames, getVersions, getStructure } from "../../lib/docs-helper"
 
-const docDirectory = path.join(process.cwd(), "./_docs");
 
-const getFullTreeDataRecursively = (dirPath, children) => {
-  const files = fs.readdirSync(dirPath);
-
-  files.forEach(file => {
-    const filePath = path.join(dirPath, file);
-    const isDirectory = fs.statSync(filePath).isDirectory();
-    const key = filePath.replace(docDirectory + '/', '').replace(/\.mdx$/, '');
-    if (isDirectory) {
-      const temp = {
-        title: file,
-        type: "folder",
-        key,
-        children: [],
-      };
-      children.push(temp);
-      getFullTreeDataRecursively(filePath, temp.children);
-    } else {
-      if (file !== '_meta.json' && file !== '.DS_Store') {
-        children.push({
-          title: file.replace(/\.mdx$/, ''),
-          type: "file",
-          key,
-        });
-      }
-    }
-  });
-}
-
-const getFullTreeData = () => {
-  const fullTreeData = [];
-  getFullTreeDataRecursively(docDirectory, fullTreeData);
-  return fullTreeData;
-}
-
-const getChildrenFromToc = (prefixKey: string, structureToc: any) => {
+const getChildrenFromToc = (prefixKey: string, structureToc: any, isPreview: Boolean) => {
   const childs = []
   for (const item of structureToc) {
     if (item.toc) {
-      const children = getChildrenFromToc(prefixKey + "/" + item.name, item.toc)
-      childs.push({
-        title: item.name,
-        type: "folder",
-        key: prefixKey + "/" + item.name,
-        children
-      })
+      const children = getChildrenFromToc(prefixKey + "/" + item.name, item.toc, isPreview)
+      if (children.length > 0) {
+        childs.push({
+          title: item.name,
+          type: "folder",
+          key: prefixKey + "/" + item.name,
+          children
+        })
+      }
+
     } else {
+      if (isPreview && item.attributes.status !== "Preview") continue;
+      if (!isPreview && item.attributes.status !== "Published") continue;
+
       var key = item.uri
       if (item.type === 'file') {
         key = prefixKey + "/" + item.uri.split('/').pop().replace(/\.[^/.]+$/, "")
@@ -108,11 +77,12 @@ const getStructureFullTreeData = async (isPreview) => {
           // Don't show collection name if there is only one
           const prefixCollectionName = structure.collections.length > 1 ? "/" + collection.name : "";
           const prefixIsPreview = isPreview ? "/preview/" : "/"
+          const prefixKey = projectName + prefixIsPreview + version + prefixGroupName + prefixCollectionName
           const platformObj = {
             title: collection.name,
             type: "folder",
             key: `${projectName}/${version}/${group.key}/${collection.name}`,
-            children: getChildrenFromToc(projectName + prefixIsPreview + version + prefixGroupName + prefixCollectionName, collection.toc)
+            children: getChildrenFromToc(prefixKey, collection.toc, isPreview)
           }
 
           languageObj.children.push(platformObj)
