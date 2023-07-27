@@ -1,12 +1,16 @@
 import Post from "../interfaces/post";
 import { useEffect } from "react";
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
 
 export default function Index(props) {
-
+  const router = useRouter();
+  const { query } = router;
+  const { isPreview } = query;
+  let isPreviewFlag = isPreview ? "true" : "false"
+  
   useEffect(() => {
     const url = new URL('/api/tree', window.location.href);
-    url.searchParams.append("isPreview", "false")
+    url.searchParams.append("isPreview", isPreviewFlag)
 
     const findFirstFileKey = (node) => {
       if (node && node.children && node.children.length > 0) {
@@ -38,7 +42,7 @@ export default function Index(props) {
         }
       });
     });
-  }, []);
+  }, [isPreviewFlag]); // TODO 这个条件好像会引起报错：client.js:1 Error: Abort fetching component for route: "/docs/[[...slug]]"
 
   return (
     <div />
