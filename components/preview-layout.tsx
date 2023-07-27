@@ -61,7 +61,7 @@ const PreviewLayout = ({ preview, children, slug, frontmatter }: Props) => {
         // TODO: Store data locally to the browser
 
         const url = new URL('/api/tree', window.location.href);
-        url.searchParams.append("isPreview",isPreview ? "true" : "false")
+        url.searchParams.append("isPreview", isPreview ? "true" : "false")
 
         fetch(url).then((response) => {
             response.json().then(({ result }) => {
@@ -112,12 +112,14 @@ const PreviewLayout = ({ preview, children, slug, frontmatter }: Props) => {
         const languageWidgetItemList: TreeWidgetItem[] = currentVersionDataObj.children.map(
             (item, index) => ({ label: item.title, value: item.key, index })
         );
-        const languageInURL = Object.keys(LANGUAGES).includes(slug[2].toLocaleLowerCase()) ? slug[2].toLocaleLowerCase() : 'en_us';
+        const languageSlugIndex = isPreview ? 3 : 2;
+        const languageInURL = Object.keys(LANGUAGES).includes(slug[languageSlugIndex].toLocaleLowerCase()) ? slug[languageSlugIndex].toLocaleLowerCase() : 'en_us';
         const currentLanguageWidgetItem = languageWidgetItemList.find((item) => item.value.split('/').pop().toLocaleLowerCase() === languageInURL);
         const currentLanguageDataObj = currentVersionDataObj.children.find(item => item.key.split("/").pop().toLowerCase() === languageInURL);
 
         // Collection
-        const collectionInURL = currentLanguageDataObj.children.length > 1 ? slug[3] : currentLanguageDataObj.children[0].title;
+        const collectionSlugIndex = isPreview ? 4 : 3;
+        const collectionInURL = currentLanguageDataObj.children.length > 1 ? slug[collectionSlugIndex] : currentLanguageDataObj.children[0].title;
         const currentCollectionDataObj = currentLanguageDataObj.children.find(item => item.title === collectionInURL).children;
 
         setVersionWidgetItemList(versionWidgetItemList);
@@ -143,7 +145,8 @@ const PreviewLayout = ({ preview, children, slug, frontmatter }: Props) => {
 
 
         // Collection
-        const collectionInURL = currentLanguageDataObj.children.length > 1 ? slug[3] : currentLanguageDataObj.children[0].title;
+        const collectionSlugIndex = isPreview ? 4 : 3;
+        const collectionInURL = currentLanguageDataObj.children.length > 1 ? slug[collectionSlugIndex] : currentLanguageDataObj.children[0].title;
         const currentCollectionDataObj = currentLanguageDataObj.children.find(item => item.title === collectionInURL).children;
 
         setLanguageWidgetItemList(languageWidgetItemList);
@@ -167,15 +170,35 @@ const PreviewLayout = ({ preview, children, slug, frontmatter }: Props) => {
         console.log('versionChangeHandle', value, option);
         const { currentCollectionDataObj } = changeVersion(option.label, fullTreeData[0]);
 
-        const path = currentCollectionDataObj[0].key;
-        Router.push(path);
-        setDefaultURL([path]);
+        const findFirstFileKey = (node) => {
+            if (node && node.children && node.children.length > 0) {
+                for (const child of node.children) {
+                    if (child.type === "file") {
+                        return child.key
+                    } else if (child.type === "folder") {
+                        const firstFileKey = findFirstFileKey(child)
+                        if (firstFileKey) {
+                            return firstFileKey
+                        }
+                    }
+                }
+
+            }
+            return undefined;
+        }
+        const path = findFirstFileKey({ children: currentCollectionDataObj })
+        if (path) {
+            Router.push(path);
+            setDefaultURL([path]);
+        }
     }
     const languageChangeHandle = (value, option) => {
         console.log('languageChangeHandle', value, option);
         changeLanguage(option.value.split("/").pop().toLowerCase(), fullTreeData[0])
 
-        var pathSuffix = (slug as string[]).slice(3).join('/');
+        const languageSlugIndex = isPreview ? 4 : 3;
+        var pathSuffix = (slug as string[]).slice(languageSlugIndex).join('/');
+
         const path = `${value.value}/${pathSuffix}`;
         Router.push(path);
         setDefaultURL([path]);

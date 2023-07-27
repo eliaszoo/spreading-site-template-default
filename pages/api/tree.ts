@@ -16,7 +16,7 @@ const getChildrenFromToc = (prefixKey: string, structureToc: any, isPreview: Boo
       }
 
     } else {
-      if (isPreview && item.attributes.status !== "Preview") continue;
+      if (isPreview && item.attributes.status === "Draft") continue;
       if (!isPreview && item.attributes.status !== "Published") continue;
 
       var key = item.uri
