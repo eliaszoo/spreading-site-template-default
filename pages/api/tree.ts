@@ -76,7 +76,12 @@ const getStructureFullTreeData = async (isPreview) => {
       key: projectName,
       children: []
     }
-    const versions = await getVersions(projectName, isPreview);
+    let versions = []
+    try {
+      versions = await getVersions(projectName, isPreview)
+    } catch (error) {
+      console.log(`[${projectName}][${isPreview}] getStructureFullTreeData failed while getting versions: ${error}`)
+    }
     for (const version of versions) {
       const versionObj = {
         title: version,
@@ -128,7 +133,7 @@ const getStructureFullTreeData = async (isPreview) => {
 
 export default async function handler(req, res) {
   try {
-    const {isPreview} = req.query;
+    const { isPreview } = req.query;
     const fullTreeData = await getStructureFullTreeData(isPreview === "true");
     res.status(200).send({ result: fullTreeData })
   } catch (err) {
