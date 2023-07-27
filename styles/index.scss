@@ -50,7 +50,7 @@ body {
     max-width: 1200px;
   }
   .article {
-    min-width: 500px;
+    // min-width: 500px;
     max-width: 900px;
     padding-right: 60px;
     padding-left: 60px;
@@ -84,7 +84,6 @@ body {
     }
   }
   .drop-expand {
-    margin-bottom: 28px;
     font-family: LexendDeca-SNaNpxiBold;
     font-weight: 600;
     font-size: 13px;
@@ -138,6 +137,9 @@ body {
     .article-anchor-top {
       display: none;
     }
+    .drop-expand {
+      margin-bottom: 28px;
+    }
     .article-anchor-right {
       display: flex;
     }
@@ -147,6 +149,11 @@ body {
   .preview-content-wrap {
     .article-anchor-top {
       display: flex;
+      background: #F9F9F9;
+      margin-bottom: 24px;
+    }
+    .drop-expand {
+      padding: 6px 21px 6px 20px;
     }
     .article-anchor-right {
       display: none;
