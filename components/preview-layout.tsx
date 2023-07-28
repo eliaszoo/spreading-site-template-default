@@ -84,11 +84,12 @@ const PreviewLayout = ({ preview, children, slug, frontmatter }: Props) => {
         }
     }, [fullTreeData]);
 
+    // Update bread crumb data
     useEffect(() => {
-        var urlPrefixCount = 2; // docs/project
-        urlPrefixCount += currentProject.children && currentProject.children.length > 1 ? 1 : 0; // docs/project/version
-        urlPrefixCount += currentVersionDataObj.children && currentVersionDataObj.children.length > 1 ? 1 : 0; // docs/project/version/language
-        urlPrefixCount += currentLanguageDataObj.children && currentLanguageDataObj.children.length > 1 ? 1 : 0; // docs/project/version/language/platform
+        var urlPrefixCount = 1; // project
+        urlPrefixCount += currentProject.children && currentProject.children.length > 1 ? 1 : 0; // project/version
+        urlPrefixCount += currentVersionDataObj.children && currentVersionDataObj.children.length > 1 ? 1 : 0; // project/version/language
+        urlPrefixCount += currentLanguageDataObj.children && currentLanguageDataObj.children.length > 1 ? 1 : 0; // project/version/language/platform
         var validSlug = slug.slice(urlPrefixCount)
         validSlug.splice(validSlug.length - 2, 1) // remove real file name from slug
         if (isPreview) {
@@ -164,6 +165,10 @@ const PreviewLayout = ({ preview, children, slug, frontmatter }: Props) => {
         const { node } = info as any;
         if (node.type === 'file') {
             Router.push(`${node.key}`);
+        } else if (node.type === 'link') {
+            if (typeof window !== 'undefined') {
+                window.open(node.key, '_blank');
+            }
         }
     }
     const versionChangeHandle = (value, option) => {
