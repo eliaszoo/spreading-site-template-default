@@ -84,6 +84,7 @@ const PreviewLayout = ({ preview, children, slug, frontmatter }: Props) => {
         }
     }, [fullTreeData]);
 
+    // Update bread crumb data
     useEffect(() => {
         var urlPrefixCount = 1; // project
         urlPrefixCount += currentProject.children && currentProject.children.length > 1 ? 1 : 0; // project/version
@@ -164,6 +165,10 @@ const PreviewLayout = ({ preview, children, slug, frontmatter }: Props) => {
         const { node } = info as any;
         if (node.type === 'file') {
             Router.push(`${node.key}`);
+        } else if (node.type === 'link') {
+            if (typeof window !== 'undefined') {
+                window.open(node.key, '_blank');
+            }
         }
     }
     const versionChangeHandle = (value, option) => {
