@@ -85,10 +85,10 @@ const PreviewLayout = ({ preview, children, slug, frontmatter }: Props) => {
     }, [fullTreeData]);
 
     useEffect(() => {
-        var urlPrefixCount = 2; // docs/project
-        urlPrefixCount += currentProject.children && currentProject.children.length > 1 ? 1 : 0; // docs/project/version
-        urlPrefixCount += currentVersionDataObj.children && currentVersionDataObj.children.length > 1 ? 1 : 0; // docs/project/version/language
-        urlPrefixCount += currentLanguageDataObj.children && currentLanguageDataObj.children.length > 1 ? 1 : 0; // docs/project/version/language/platform
+        var urlPrefixCount = 1; // project
+        urlPrefixCount += currentProject.children && currentProject.children.length > 1 ? 1 : 0; // project/version
+        urlPrefixCount += currentVersionDataObj.children && currentVersionDataObj.children.length > 1 ? 1 : 0; // project/version/language
+        urlPrefixCount += currentLanguageDataObj.children && currentLanguageDataObj.children.length > 1 ? 1 : 0; // project/version/language/platform
         var validSlug = slug.slice(urlPrefixCount)
         validSlug.splice(validSlug.length - 2, 1) // remove real file name from slug
         if (isPreview) {
