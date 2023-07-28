@@ -131,9 +131,16 @@ if __name__ == '__main__':
         subprocess.call(["aws", "s3", "rm", "s3://zego-spreading/"+products_dir, "--recursive"])
 
         # build
-        subprocess.call(["sam", "build"])
+        code = subprocess.call(["sam", "build"])
+        if code != 0:
+            report_build_status(callback_url, 500, "sam build error", i_ws, site, "")
+            sys.exit(2)
+
         stack = workspace.replace("_", "-")+"-"+site
-        subprocess.call(["sam", "deploy", "--stack-name", stack, "--s3-bucket", "zego-spreading", "--s3-prefix", products_dir])
+        code = subprocess.call(["sam", "deploy", "--stack-name", stack, "--s3-bucket", "zego-spreading", "--s3-prefix", products_dir])
+        if code != 0:
+            report_build_status(callback_url, 500, "sam deploy error", i_ws, site, "")
+            sys.exit(2)
 
         # 读取api id
         api_id = subprocess.check_output(["aws", "cloudformation", "describe-stacks", "--stack-name", stack, "--query", "Stacks[0].Outputs[?OutputKey==`ApiId`].OutputValue", "--output", "text"])
