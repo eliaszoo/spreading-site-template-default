@@ -126,10 +126,14 @@ if __name__ == '__main__':
         rename(workspace+"_"+site)
         #rename_stack(workspace+"_"+site)
 
+        # 制品目录，先清理下历史制品
+        products_dir = workspace+"_products/"+site
+        subprocess.call(["aws", "s3", "rm", "s3://zego-spreading/"+products_dir, "--recursive"])
+
         # build
         subprocess.call(["sam", "build"])
         stack = workspace.replace("_", "-")+"-"+site
-        subprocess.call(["sam", "deploy", "--stack-name", stack, "--s3-bucket", "zego-spreading"])
+        subprocess.call(["sam", "deploy", "--stack-name", stack, "--s3-bucket", "zego-spreading", "--s3-prefix", products_dir])
 
         # 读取api id
         api_id = subprocess.check_output(["aws", "cloudformation", "describe-stacks", "--stack-name", stack, "--query", "Stacks[0].Outputs[?OutputKey==`ApiId`].OutputValue", "--output", "text"])
