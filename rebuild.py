@@ -38,8 +38,8 @@ def rename(site):
     with open("package.json", 'w') as file:
         json.dump(data, file, indent=4)
 
-def report_build_status(url, code, msg, workspace, site):
-    body = '{"code":'+str(code)+',"msg":"'+msg+'","workspace":'+str(workspace)+',"site":'+str(site)+'}'
+def report_build_status(url, code, msg, workspace, site, api_id):
+    body = '{"code":'+str(code)+',"msg":"'+msg+'","workspace":'+str(workspace)+',"site":'+str(site)+ ',"api_id":"' + api_id +'"}'
     print(body)
     subprocess.call(["curl", "-X", "POST", "-H", "Content-Type: application/json", "-d", body, url])
 
@@ -92,7 +92,7 @@ if __name__ == '__main__':
                     branchs = clone_all_branch(base + name, token, "./"+name)
                     projBranchs[proj] = branchs
         if domain == "":
-            report_build_status(callback_url, 500, "invalid domain", i_ws, site)
+            report_build_status(callback_url, 500, "invalid domain", i_ws, site, "")
             sys.exit(2)
         
         # 写入本地site.json
@@ -130,7 +130,12 @@ if __name__ == '__main__':
         subprocess.call(["sam", "build"])
         stack = workspace.replace("_", "-")+"-"+site
         subprocess.call(["sam", "deploy", "--stack-name", stack, "--s3-bucket", "zego-spreading"])
-        report_build_status(callback_url, 0, "success", i_ws, site)
+
+        # 读取api id
+        api_id = subprocess.check_output(["aws", "cloudformation", "describe-stacks", "--stack-name", stack, "--query", "Stacks[0].Outputs[?OutputKey==`ApiId`].OutputValue", "--output", "text"])
+        api_id = api_id.decode("utf-8")
+
+        report_build_status(callback_url, 0, "success", i_ws, site, api_id)
     except Exception as e:
-        report_build_status(callback_url, 500, str(e), i_ws, site)
+        report_build_status(callback_url, 500, str(e), i_ws, site, "")
         sys.exit(2)
