@@ -133,7 +133,7 @@ if __name__ == '__main__':
 
         # 读取api id
         api_id = subprocess.check_output(["aws", "cloudformation", "describe-stacks", "--stack-name", stack, "--query", "Stacks[0].Outputs[?OutputKey==`ApiId`].OutputValue", "--output", "text"])
-        api_id = api_id.decode("utf-8")
+        api_id = api_id.decode("utf-8").rstrip("\n\t\r")
         print("api_id:", api_id)
 
         report_build_status(callback_url, 0, "success", i_ws, site, api_id)
