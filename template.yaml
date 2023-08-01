@@ -5,7 +5,7 @@ Description: >
 
 Globals:
   Function:
-    Timeout: 2
+    Timeout: 5
 
 Resources:
   NextFunction:
