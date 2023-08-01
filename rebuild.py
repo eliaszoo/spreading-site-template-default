@@ -39,9 +39,18 @@ def rename(site):
         json.dump(data, file, indent=4)
 
 def report_build_status(url, code, msg, workspace, site, api_id):
-    body = '{"code":'+str(code)+',"msg":"'+msg+'","workspace":'+str(workspace)+',"site":'+str(site)+ ',"api_id":"' + api_id +'"}'
-    print(body)
-    subprocess.call(["curl", "-X", "POST", "-H", "Content-Type: application/json", "-d", body, url])
+    body = {}
+    body['code'] = code
+    body['msg'] = msg
+    body['workspace'] = int(workspace)
+    body['site'] = int(site)
+    body['api_id'] = api_id
+    s = json.dumps(body)
+    #print(s)
+
+    #body = '{"code":'+str(code)+',"msg":"'+msg+'","workspace":'+str(workspace)+',"site":'+str(site)+ ',"api_id":"' + api_id +'"}'
+    #print(body)
+    subprocess.call(["curl", "-X", "POST", "-H", "Content-Type: application/json", "-d", s, url])
 
 if __name__ == '__main__':
     try:
@@ -102,8 +111,8 @@ if __name__ == '__main__':
         print(projList)
         # 写projects.json
         subprocess.call(["mkdir", "-p", "docs"])
-        with open("docs/projects.json", 'w') as file:
-            json.dump(projNames, file, indent=4)
+        #with open("docs/projects.json", 'w') as file:
+            #json.dump(projNames, file, indent=4)
 
          # cp docs
         for proj in projList:
@@ -120,7 +129,7 @@ if __name__ == '__main__':
 
             subprocess.call(["aws", "s3", "rm", "s3://zego-spreading/"+workspace+"/"+name, "--recursive"])
             subprocess.call(["aws", "s3", "cp", "./docs/"+name, "s3://zego-spreading/"+workspace+"/docs/"+name, "--recursive", "--acl", "public-read"])
-            subprocess.call(["aws", "s3", "cp", "docs/projects.json", "s3://zego-spreading/"+workspace+"/docs/", "--acl", "public-read"])
+            #subprocess.call(["aws", "s3", "cp", "docs/projects.json", "s3://zego-spreading/"+workspace+"/docs/", "--acl", "public-read"])
 
         # rename
         rename(workspace+"_"+site)
@@ -131,11 +140,17 @@ if __name__ == '__main__':
         subprocess.call(["aws", "s3", "rm", "s3://zego-spreading/"+products_dir, "--recursive"])
 
         # build
-        code = subprocess.call(["sam", "build"])
+        process = subprocess.Popen("sam build", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        output, error = process.communicate()
+        #output = output.decode("utf-8").rstrip("\n\t\r")
+        error = error.decode("utf-8").rstrip("\n\t\r")
+        code = process.returncode
         if code != 0:
-            report_build_status(callback_url, 500, "sam build error", i_ws, site, "")
+            print("output:"+error)
+            report_build_status(callback_url, 500, "sam build error:"+error, i_ws, site, "")
             sys.exit(2)
 
+        # deploy
         stack = workspace.replace("_", "-")+"-"+site
         code = subprocess.call(["sam", "deploy", "--stack-name", stack, "--s3-bucket", "zego-spreading", "--s3-prefix", products_dir])
         if code != 0:
