@@ -94,7 +94,7 @@ if __name__ == '__main__':
         # copy files 2 s3
         for version, files in update_files.items():
             s_path = workspace + "_" + project + "/" + version + "/"
-            t_path = workspace + "/" + output_folder + "/" + version + "/"
+            t_path = workspace + "/" + output_folder + "/" + version + "/docs/"
             for file in files:
                 subprocess.call(["aws", "s3", "cp", s_path + file, "s3://zego-spreading/"+t_path, "--acl", "public-read"])
             subprocess.call(["aws", "s3", "cp", s_path + "structure.json", "s3://zego-spreading/"+t_path, "--acl", "public-read"])
