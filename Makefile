@@ -12,7 +12,7 @@ artifacts:
 	cp -r public/. .next/standalone/public
 	cp -r .next/static/. .next/standalone/.next/static
 	# TODO need to change the package name "listen-test-ui" to the public one
-	cp -r node_modules/listen-test-ui .next/standalone/node_modules
+	mkdir -p .next/standalone/node_modules/listen-test-ui;cp -a node_modules/listen-test-ui/* .next/standalone/node_modules/listen-test-ui
 
 	# Copy artifacts for deployment
 	cp -r .next/standalone/. $(ARTIFACTS_DIR)
