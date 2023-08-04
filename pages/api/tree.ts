@@ -16,13 +16,12 @@ const getChildrenFromToc = (prefixKey: string, structureToc: any, isPreview: Boo
       }
 
     } else {
-      if (isPreview && item.attributes.status === "Draft") continue;
-      if (!isPreview && item.attributes.status !== "Published") continue;
+      // Unpublished files will be ignored.
+      if (item.attributes.status === "Draft" && !item.attributes.published_hash) continue;
 
       var key = item.uri
       if (item.type === 'file') {
-        key = prefixKey + "/" + item.uri.split('/').pop().replace(/\.[^/.]+$/, "")
-        key = key + "/" + item.name
+        key = prefixKey + "/" + item.name + "/" + item.uri.split('/').pop().replace(/\.[^/.]+$/, "") + (isPreview ? "/preview" : "")
       }
       childs.push({
         title: item.name,
@@ -60,8 +59,8 @@ const getStructureFullTreeData = async (isPreview) => {
       }
 
       const structure = await getStructure(projectName, version, isPreview);
-      const collectionGroups = structure.collection_group
-      for (const group of collectionGroups) {
+      const languageGroups = structure.collection_group
+      for (const group of languageGroups) {
         const languageObj = {
           title: group.name,
           type: "folder",
@@ -72,12 +71,11 @@ const getStructureFullTreeData = async (isPreview) => {
         const platforms = group.values
         for (const platform of platforms) {
           // Don't show group name if there is only one
-          const prefixGroupName = collectionGroups.length > 1 ? "/" + group.key.toLowerCase() : "";
+          const prefixlanguageName = languageGroups.length > 1 ? "/" + group.key.toLowerCase() : "";
           const collection = structure.collections.find((c: { id: string; }) => c.id === platform) || {};
           // Don't show collection name if there is only one
-          const prefixCollectionName = structure.collections.length > 1 ? "/" + collection.name : "";
-          const prefixIsPreview = isPreview ? "/preview/" : "/"
-          const prefixKey = projectName + prefixIsPreview + version + prefixGroupName + prefixCollectionName
+          const prefixPlatformName = structure.collections.length > 1 ? "/" + collection.name : "";
+          const prefixKey = projectName + "/" + version + prefixlanguageName + prefixPlatformName
           const platformObj = {
             title: collection.name,
             type: "folder",

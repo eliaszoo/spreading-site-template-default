@@ -96,7 +96,7 @@ if __name__ == '__main__':
             s_path = workspace + "_" + project + "/" + version + "/"
             t_path = workspace + "/" + output_folder + "/" + version + "/docs/"
             for file in files:
-                subprocess.call(["aws", "s3", "cp", s_path + file, "s3://zego-spreading/"+t_path, "--acl", "public-read"])
+                subprocess.call(["aws", "s3", "cp", s_path + file, "s3://zego-spreading/"+t_path+"docs/", "--acl", "public-read"])
             subprocess.call(["aws", "s3", "cp", s_path + "structure.json", "s3://zego-spreading/"+t_path, "--acl", "public-read"])
 
         report_build_status(callback_url, 0, "success", i_ws, site)

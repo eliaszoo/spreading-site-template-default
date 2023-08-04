@@ -42,7 +42,7 @@ const PreviewLayout = ({ preview, children, slug, frontmatter }: Props) => {
     //     return <div>正在加载数据...</div>;
     // }
 
-    const isPreview = slug[1] === PREVIEW_KEY
+    const isPreview = slug[slug.length - 1] === PREVIEW_KEY
     const [fullTreeData, setFullTreeData] = useState([]);
     const [currentProject, setCurrentProjectObj] = useState({} as TreeDataObject);
     const [currentVersionDataObj, setCurrentVersionDataObj] = useState({} as TreeDataObject);
@@ -79,25 +79,22 @@ const PreviewLayout = ({ preview, children, slug, frontmatter }: Props) => {
             setCurrentProjectObj(defaultProject)
 
             // Version
-            const versionInURL = isPreview ? slug[2] : slug[1];
+            const versionInURL = slug[1];
             changeVersion(versionInURL, defaultProject);
         }
     }, [fullTreeData]);
 
     // Update bread crumb data
     useEffect(() => {
-        var urlPrefixCount = 1; // project
-        urlPrefixCount += currentProject.children && currentProject.children.length > 1 ? 1 : 0; // project/version
-        urlPrefixCount += currentVersionDataObj.children && currentVersionDataObj.children.length > 1 ? 1 : 0; // project/version/language
-        urlPrefixCount += currentLanguageDataObj.children && currentLanguageDataObj.children.length > 1 ? 1 : 0; // project/version/language/platform
-        var validSlug = slug.slice(urlPrefixCount)
-        validSlug.splice(validSlug.length - 2, 1) // remove real file name from slug
+        var validSlug = slug.slice(2)
         if (isPreview) {
-            validSlug.shift() // remove preview from slug
+            validSlug.pop() // remove preview from slug
         }
+        validSlug.pop() // remove real mdx file name from slug
         setBreadcrumbData(validSlug.map(item => {
             return { title: item }
         }))
+
     }, [currentProject, currentVersionDataObj, currentLanguageDataObj, currentCollectionDataObj, defaultURL, slug]);
 
     const changeVersion = (versionName: string, currentProject: TreeDataObject) => {
@@ -113,13 +110,13 @@ const PreviewLayout = ({ preview, children, slug, frontmatter }: Props) => {
         const languageWidgetItemList: TreeWidgetItem[] = currentVersionDataObj.children.map(
             (item, index) => ({ label: item.title, value: item.key, index })
         );
-        const languageSlugIndex = isPreview ? 3 : 2;
+        const languageSlugIndex = 2;
         const languageInURL = Object.keys(LANGUAGES).includes(slug[languageSlugIndex].toLocaleLowerCase()) ? slug[languageSlugIndex].toLocaleLowerCase() : 'en_us';
         const currentLanguageWidgetItem = languageWidgetItemList.find((item) => item.value.split('/').pop().toLocaleLowerCase() === languageInURL);
         const currentLanguageDataObj = currentVersionDataObj.children.find(item => item.key.split("/").pop().toLowerCase() === languageInURL);
 
         // Collection
-        const collectionSlugIndex = isPreview ? 4 : 3;
+        const collectionSlugIndex = 3;
         const collectionInURL = currentLanguageDataObj.children.length > 1 ? slug[collectionSlugIndex] : currentLanguageDataObj.children[0].title;
         const currentCollectionDataObj = currentLanguageDataObj.children.find(item => item.title === collectionInURL).children;
 
@@ -146,7 +143,7 @@ const PreviewLayout = ({ preview, children, slug, frontmatter }: Props) => {
 
 
         // Collection
-        const collectionSlugIndex = isPreview ? 4 : 3;
+        const collectionSlugIndex = 3;
         const collectionInURL = currentLanguageDataObj.children.length > 1 ? slug[collectionSlugIndex] : currentLanguageDataObj.children[0].title;
         const currentCollectionDataObj = currentLanguageDataObj.children.find(item => item.title === collectionInURL).children;
 
@@ -201,7 +198,7 @@ const PreviewLayout = ({ preview, children, slug, frontmatter }: Props) => {
         console.log('languageChangeHandle', value, option);
         changeLanguage(option.value.split("/").pop().toLowerCase(), fullTreeData[0])
 
-        const languageSlugIndex = isPreview ? 4 : 3;
+        const languageSlugIndex = 3;
         var pathSuffix = (slug as string[]).slice(languageSlugIndex).join('/');
 
         const path = `${value.value}/${pathSuffix}`;
