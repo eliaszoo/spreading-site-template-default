@@ -135,10 +135,6 @@ if __name__ == '__main__':
         rename(workspace+"_"+site)
         #rename_stack(workspace+"_"+site)
 
-        # 制品目录，先清理下历史制品
-        products_dir = workspace+"_products/"+site
-        subprocess.call(["aws", "s3", "rm", "s3://zego-spreading/"+products_dir, "--recursive"])
-
         # build
         process = subprocess.Popen("sam build", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         output, error = process.communicate()
@@ -149,6 +145,10 @@ if __name__ == '__main__':
             print("output:"+error)
             report_build_status(callback_url, 500, "sam build error:"+error, i_ws, site, "")
             sys.exit(2)
+
+        # 制品目录，先清理下历史制品
+        products_dir = workspace+"_products/"+site
+        subprocess.call(["aws", "s3", "rm", "s3://zego-spreading/"+products_dir, "--recursive"])
 
         # deploy
         stack = workspace.replace("_", "-")+"-"+site
