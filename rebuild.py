@@ -140,9 +140,9 @@ if __name__ == '__main__':
         output, error = process.communicate()
         #output = output.decode("utf-8").rstrip("\n\t\r")
         error = error.decode("utf-8").rstrip("\n\t\r")
+        print("output:"+error)
         code = process.returncode
         if code != 0:
-            print("output:"+error)
             report_build_status(callback_url, 500, "sam build error:"+error, i_ws, site, "")
             sys.exit(2)
 
