@@ -1,7 +1,11 @@
 import { getMDXComponent } from "mdx-bundler/client";
 import { useMemo } from "react";
 import { getAllSlugs, readDoc } from "../../lib/docs";
-import PreviewLayout from "../../components/preview-layout";
+// import PreviewLayout from "../../components/preview-layout";
+import dynamic from 'next/dynamic'
+const PreviewLayout = dynamic(async () => await import('../../components/preview-layout'), {
+  ssr: false,
+})
 
 export const getStaticProps = async ({ params }) => {
   console.log('[Spreading] getStaticProps:', params)
