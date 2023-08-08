@@ -9,21 +9,24 @@
   $tableResizeHandleBgColor: #171717;
 
   //标题
-  h1 {
+  h1,
+  h1 p {
     font-size: 26px;
     line-height: 39px;
     margin-top: 36px;
     margin-bottom: 24px;
     font-weight: 600;
   }
-  h2 {
+  h2,
+  h2 p {
     font-size: 22px;
     line-height: 32px;
     margin-top: 32px;
     margin-bottom: 24px;
     font-weight: 600;
   }
-  h3 {
+  h3,
+  h3 p {
     font-size: 20px;
     line-height: 39px;
     margin-top: 32px;
@@ -31,7 +34,7 @@
     font-weight: 600;
   }
 
-  * + p {
+  p {
     font-size: 14px;
     line-height: 25px;
     margin-top: 24px;
