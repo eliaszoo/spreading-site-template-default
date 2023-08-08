@@ -30,6 +30,7 @@ Resources:
       Events:
         HttpEvent:
           Type: HttpApi
+<<<<<<< HEAD
       VpcConfig:
         SecurityGroupIds:
           - sg-01740868fe8f300ff
@@ -39,6 +40,8 @@ Resources:
       FileSystemConfigs:
         Arn: arn:aws:elasticfilesystem:ap-southeast-1:547537176727:access-point/fsap-006bc3bc25155b68b
         LocalMountPath: /mnt/efs
+=======
+>>>>>>> 153bcc64fcd6ee42fe5a25cc1110b34c7a75a577
     Metadata:
       BuildMethod: makefile
 
