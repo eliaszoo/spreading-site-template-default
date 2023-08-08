@@ -59,7 +59,7 @@ const getStructureFullTreeData = async (isPreview) => {
       }
 
       const structure = await getStructure(projectName, version, isPreview);
-      console.log("[Spreading][getStructureFullTreeData] structure: ", structure)
+      console.log("[Spreading][getStructureFullTreeData] structure: ", JSON.stringify(structure))
       
       const languageGroups = structure.collection_group
       for (const group of languageGroups) {
