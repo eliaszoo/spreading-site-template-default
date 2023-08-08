@@ -1,29 +1,16 @@
-[
-    {
-        "id": "site1",
-        "name": "My Site1",
-        "title": "xxx",
-        "icon": "path/start/from/site/folder/to/icon",
-        "icon_redirect_url": "https://xxxx.spreading.ai",
-        "favicon": "path/start/from/site/folder/to/favicon",
-        "projects": [
-            "1",
-            "2"
-        ],
-        "domain": "my_site1.spreading.ai",
-        "doc_url": "https://zego-spreading.s3.ap-southeast-1.amazonaws.com/spreading_1/docs"
-    },
-    {
-        "id": "site2",
-        "name": "My Site2",
-        "title": "xxx",
-        "icon": "path/start/from/site/folder/to/icon",
-        "icon_redirect_url": "https://xxxx.spreading.ai",
-        "favicon": "path/start/from/site/folder/to/favicon",
-        "projects": [
-            "3"
-        ],
-        "domain": "my_site2.spreading.ai",
-        "doc_url": "https://zego-spreading.s3.ap-southeast-1.amazonaws.com/spreading_1/docs"
-    }
-]
+{
+    "id": "jfew3ewfew",
+    "name": "My Site",
+    "title": "xxx",
+    "icon": "path/start/from/site/folder/to/icon",
+    "icon_redirect_url": "https://xxxx.spreading.ai",
+    "favicon": "path/start/from/site/folder/to/favicon",
+    "projects": [
+        {
+            "id": "112",
+            "name": "jjj"
+        }
+    ],
+    "domain": "my_site.spreading.ai",
+    "doc_url": "https://zego-spreading.s3.ap-southeast-1.amazonaws.com/spreading_15/docs/"
+}

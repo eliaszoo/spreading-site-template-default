@@ -1,56 +1,53 @@
-import Container from "../components/container";
-import MoreStories from "../components/more-stories";
-import HeroPost from "../components/hero-post";
-import Intro from "../components/intro";
-import Layout from "../components/layout";
-import Head from "next/head";
-import { CMS_NAME } from "../lib/constants";
 import Post from "../interfaces/post";
-import { Text } from "listen-test-ui";
-type Props = {
-  allPosts: Post[];
-};
+import { useEffect } from "react";
+import Router, { useRouter } from "next/router";
 
-export default function Index({ allPosts }: Props) {
-  const heroPost = undefined; //allPosts[0]
-  const morePosts = []; //allPosts.slice(1)
+export default function Index(props) {
+  const router = useRouter();
+
+  useEffect(() => {
+    const { query } = router;
+    if (Object.keys(query).length === 0) {
+      return;
+    }
+    const { isPreview } = query;
+    let isPreviewFlag = isPreview ? "true" : "false"
+    const url = new URL('/api/tree', window.location.href);
+    url.searchParams.append("isPreview", isPreviewFlag)
+
+    const findFirstFileKey = (node) => {
+      if (node && node.children && node.children.length > 0) {
+        for (const child of node.children) {
+          if (child.type === "file") {
+            return child.key
+          } else if (child.type === "folder") {
+            const firstFileKey = findFirstFileKey(child)
+            if (firstFileKey) {
+              return firstFileKey
+            }
+          }
+        }
+
+      }
+      return undefined;
+    }
+    fetch(url).then((response) => {
+      response.json().then(({ result }) => {
+        console.log('fetch fullTreeData', result);
+        const firstProject = result[0]
+        const firstVersion = firstProject.children[0]
+        const firstLanguage = firstVersion && firstVersion.children[0]
+        const firstPlatform = firstLanguage && firstLanguage.children[0]
+        const firstFileKey = firstPlatform && findFirstFileKey(firstPlatform)
+        console.log('firstFileKey', firstFileKey);
+        if (firstFileKey) {
+          Router.push("docs/" + firstFileKey);
+        }
+      });
+    });
+  }, [router]);
+
   return (
-    <>
-      <Layout>
-        <Text text="this is a test" />
-        <Head>
-          <title>{`Next.js Blog Example with ${CMS_NAME}`}</title>
-        </Head>
-        <Container>
-          <Intro />
-          {heroPost && (
-            <HeroPost
-              title={heroPost.title}
-              coverImage={heroPost.coverImage}
-              date={heroPost.date}
-              author={heroPost.author}
-              slug={heroPost.slug}
-              excerpt={heroPost.excerpt}
-            />
-          )}
-          {morePosts.length > 0 && <MoreStories posts={morePosts} />}
-        </Container>
-      </Layout>
-    </>
+    <div />
   );
 }
-
-// export const getStaticProps = async () => {
-//   const allPosts = getAllPosts([
-//     'title',
-//     'date',
-//     'slug',
-//     'author',
-//     'coverImage',
-//     'excerpt',
-//   ])
-
-//   return {
-//     props: { allPosts },
-//   }
-// }

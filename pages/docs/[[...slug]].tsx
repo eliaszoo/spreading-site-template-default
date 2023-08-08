@@ -1,10 +1,11 @@
 import { getMDXComponent } from "mdx-bundler/client";
 import { useMemo } from "react";
-import { getAllDocsInfo, getDocData } from "../../lib/docs";
+import { getAllSlugs, readDoc } from "../../lib/docs";
 import PreviewLayout from "../../components/preview-layout";
 
 export const getStaticProps = async ({ params }) => {
-  const postData = await getDocData(params.slug);
+  console.log('[Spreading] getStaticProps:', params)
+  const postData = await readDoc(params.slug);
   return {
     props: {
       ...postData,
@@ -14,8 +15,8 @@ export const getStaticProps = async ({ params }) => {
 };
 
 export async function getStaticPaths() {
-  const allDocsInfo = getAllDocsInfo();
-  const paths = allDocsInfo.mdxSlugs;
+  console.log('[Spreading] getStaticPaths...')
+  const paths = await getAllSlugs();
   return {
     paths,
     fallback: false,
@@ -23,22 +24,21 @@ export async function getStaticPaths() {
 }
 
 export default function DocPage({ code, frontmatter, slug }) {
+  console.log('[Spreading] DocPage: ', slug, frontmatter)
   const Component = useMemo(() => getMDXComponent(code), [code]);
 
   return (
     <div className="prose" style={{ maxWidth: "unset" }}>
-        <h1>{frontmatter.title}</h1>
-        <p>{frontmatter.description}</p>
-        <p>{frontmatter.date}</p>
-        <article>
-          <Component />
-        </article>
+      <h1>{frontmatter.title}</h1>
+      <p>{frontmatter.description}</p>
+      <p>{frontmatter.date}</p>
+      <article className="editor-wrapper">
+        <Component />
+      </article>
     </div>
   );
 }
 
 DocPage.getLayout = function getLayout(page, pageProps) {
-  return (
-    <PreviewLayout {...pageProps}>{page}</PreviewLayout>
-  )
-}
+  return <PreviewLayout {...pageProps}>{page}</PreviewLayout>;
+};

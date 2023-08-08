@@ -38,10 +38,19 @@ def rename(site):
     with open("package.json", 'w') as file:
         json.dump(data, file, indent=4)
 
-def report_build_status(url, code, msg, workspace, site):
-    body = '{"code":'+str(code)+',"msg":"'+msg+'","workspace":'+str(workspace)+',"site":'+str(site)+'}'
-    print(body)
-    subprocess.call(["curl", "-X", "POST", "-H", "Content-Type: application/json", "-d", body, url])
+def report_build_status(url, code, msg, workspace, site, api_id):
+    body = {}
+    body['code'] = code
+    body['msg'] = msg
+    body['workspace'] = int(workspace)
+    body['site'] = int(site)
+    body['api_id'] = api_id
+    s = json.dumps(body)
+    #print(s)
+
+    #body = '{"code":'+str(code)+',"msg":"'+msg+'","workspace":'+str(workspace)+',"site":'+str(site)+ ',"api_id":"' + api_id +'"}'
+    #print(body)
+    subprocess.call(["curl", "-X", "POST", "-H", "Content-Type: application/json", "-d", s, url])
 
 if __name__ == '__main__':
     try:
@@ -75,55 +84,85 @@ if __name__ == '__main__':
         print(list)
         # clone projects
         projList = []
+        projNames = []
         projBranchs = {}
         domain = ""
         for item in list:
-            item["doc_url"] = "https://zego-spreading.s3.ap-southeast-1.amazonaws.com/" + workspace + "/docs"
-            if item["id"] == site:
+            item["doc_url"] = "https://zego-spreading.s3.ap-southeast-1.amazonaws.com/" + workspace + "/docs/"
+            if str(item["id"]) == site:
                 domain = item["domain"]
+                siteJson = item
                 subprocess.call(["cp", "-r", workspace+"/sites/"+site+"/favicon.ico", "./public/favicon"])
                 for proj in item["projects"]:
+                    projNames.append(proj["name"])
+                    proj = str(proj["id"])
                     name = workspace + "_" + proj
                     projList.append(proj)
                     branchs = clone_all_branch(base + name, token, "./"+name)
                     projBranchs[proj] = branchs
         if domain == "":
-            report_build_status(callback_url, 500, "invalid domain", i_ws, site)
+            report_build_status(callback_url, 500, "invalid domain", i_ws, site, "")
             sys.exit(2)
         
         # 写入本地site.json
         with open("site.json", 'w') as file:
-            json.dump(list, file, indent=4)
+            json.dump(siteJson, file, indent=4)
 
         print(projList)
         # 写projects.json
         subprocess.call(["mkdir", "-p", "docs"])
-        with open("docs/projects.json", 'w') as file:
-            json.dump(projList, file, indent=4)
+        #with open("docs/projects.json", 'w') as file:
+            #json.dump(projNames, file, indent=4)
 
          # cp docs
         for proj in projList:
             name = proj
             for branch in projBranchs[name]:
                 target = "docs/"+name+"/"
-                subprocess.call(["mkdir", "-p", target])
-                subprocess.call(["cp", "-r", workspace + "_" + name +"/" + branch, target])
+                subprocess.call(["mkdir", "-p", target+"public", target+"preview"])
+                subprocess.call(["cp", "-r", workspace + "_" + name +"/" + branch, target+"public/"])
+                subprocess.call(["cp", "-r", workspace + "_" + name +"/" + branch, target+"preview/"])
             # 写version
-            with open("docs/"+name+"/versions.json", 'w') as file:
+            with open("docs/"+name+"/public/versions.json", 'w') as file:
                 json.dump(projBranchs[name], file, indent=4)
+            subprocess.call(["cp", "docs/"+name+"/public/versions.json", "docs/"+name+"/preview/"])
 
             subprocess.call(["aws", "s3", "rm", "s3://zego-spreading/"+workspace+"/"+name, "--recursive"])
             subprocess.call(["aws", "s3", "cp", "./docs/"+name, "s3://zego-spreading/"+workspace+"/docs/"+name, "--recursive", "--acl", "public-read"])
+            #subprocess.call(["aws", "s3", "cp", "docs/projects.json", "s3://zego-spreading/"+workspace+"/docs/", "--acl", "public-read"])
 
         # rename
         rename(workspace+"_"+site)
         #rename_stack(workspace+"_"+site)
 
         # build
-        subprocess.call(["sam", "build"])
+        process = subprocess.Popen("sam build", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        output, error = process.communicate()
+        #output = output.decode("utf-8").rstrip("\n\t\r")
+        error = error.decode("utf-8").rstrip("\n\t\r")
+        print("output:"+error)
+        code = process.returncode
+        if code != 0:
+            report_build_status(callback_url, 500, "sam build error:"+error, i_ws, site, "")
+            sys.exit(2)
+
+        # 制品目录，先清理下历史制品
+        products_dir = workspace+"_products/"+site
+        subprocess.call(["aws", "s3", "rm", "s3://zego-spreading/"+products_dir, "--recursive"])
+
+        # deploy
         stack = workspace.replace("_", "-")+"-"+site
-        subprocess.call(["sam", "deploy", "--stack-name", stack, "--s3-bucket", "zego-spreading"])
-        report_build_status(callback_url, 0, "success", i_ws, site)
+        code = subprocess.call(["sam", "deploy", "--stack-name", stack, "--s3-bucket", "zego-spreading", "--s3-prefix", products_dir])
+        if code != 0:
+            report_build_status(callback_url, 500, "sam deploy error", i_ws, site, "")
+            sys.exit(2)
+
+        # 读取api id
+        api_id = subprocess.check_output(["aws", "cloudformation", "describe-stacks", "--stack-name", stack, "--query", "Stacks[0].Outputs[?OutputKey==`ApiId`].OutputValue", "--output", "text"])
+        api_id = api_id.decode("utf-8").rstrip("\n\t\r")
+        print("api_id:", api_id)
+
+        report_build_status(callback_url, 0, "success", i_ws, site, api_id)
     except Exception as e:
-        report_build_status(callback_url, 500, str(e), i_ws, site)
+        report_build_status(callback_url, 500, str(e), i_ws, site, "")
         sys.exit(2)

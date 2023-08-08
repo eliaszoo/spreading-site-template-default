@@ -1,5 +1,5 @@
 import { AppProps } from "next/app";
-import "../styles/index.css";
+import "../styles/index.scss";
 import "../styles/editor.scss";
 import "tailwindcss/tailwind.css"; // 引入 Tailwind 的默认样式
 import "../tailwind.config.js"; // 引入自定义配置

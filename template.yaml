@@ -5,7 +5,7 @@ Description: >
 
 Globals:
   Function:
-    Timeout: 2
+    Timeout: 10
 
 Resources:
   NextFunction:
@@ -30,6 +30,15 @@ Resources:
       Events:
         HttpEvent:
           Type: HttpApi
+      VpcConfig:
+        SecurityGroupIds:
+          - sg-01740868fe8f300ff
+        SubnetIds:
+          - subnet-03e38aa3f7292ff8b
+          - subnet-0d7552b23eb723532
+      FileSystemConfigs:
+        Arn: arn:aws:elasticfilesystem:ap-southeast-1:547537176727:access-point/fsap-006bc3bc25155b68b
+        LocalMountPath: /mnt/efs
     Metadata:
       BuildMethod: makefile
 
@@ -37,7 +46,7 @@ Resources:
 Outputs:
   NextFunctionURL:
     Description: "API Gateway endpoint URL for Next.js"
-    Value: !Sub "${ServerlessHttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/"
+    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/"
   ApiId:
     Description: "Api Id"
     Value: !Sub ${ServerlessHttpApi}
