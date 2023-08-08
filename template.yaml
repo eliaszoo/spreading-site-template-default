@@ -15,7 +15,7 @@ Resources:
       MemorySize: 256
       Handler: run.sh
       Runtime: nodejs16.x
-      Role: arn:aws:iam::547537176727:role/to_spreading_codebuild
+      #Role: arn:aws:iam::547537176727:role/to_spreading_codebuild
       Architectures:
         - x86_64
       Environment:
@@ -24,24 +24,22 @@ Resources:
           AWS_LWA_ENABLE_COMPRESSION: true
           RUST_LOG: info
           PORT: 8000
-          MY_BUCKET_NAME: zego-spreading
+          MY_BUCKET_NAME: zego-spreading-test
       Layers:
         - !Sub arn:aws:lambda:${AWS::Region}:753240598075:layer:LambdaAdapterLayerX86:16
       Events:
         HttpEvent:
           Type: HttpApi
-<<<<<<< HEAD
       VpcConfig:
         SecurityGroupIds:
-          - sg-01740868fe8f300ff
+          - sg-06e2a33841f933db1
         SubnetIds:
-          - subnet-03e38aa3f7292ff8b
-          - subnet-0d7552b23eb723532
+          - subnet-0d7406209dd8e1398
+          - subnet-0d0feef4e11305a33
+          - subnet-08ba317bb21685db6
       FileSystemConfigs:
-        Arn: arn:aws:elasticfilesystem:ap-southeast-1:547537176727:access-point/fsap-006bc3bc25155b68b
+        Arn: arn:aws:elasticfilesystem:ap-southeast-1:432303926625:access-point/fsap-067ec8e9e11143e20
         LocalMountPath: /mnt/efs
-=======
->>>>>>> 153bcc64fcd6ee42fe5a25cc1110b34c7a75a577
     Metadata:
       BuildMethod: makefile
 

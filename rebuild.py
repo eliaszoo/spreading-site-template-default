@@ -88,7 +88,7 @@ if __name__ == '__main__':
         projBranchs = {}
         domain = ""
         for item in list:
-            item["doc_url"] = "https://zego-spreading.s3.ap-southeast-1.amazonaws.com/" + workspace + "/docs/"
+            item["doc_url"] = "https://zego-spreading-test.s3.ap-southeast-1.amazonaws.com/" + workspace + "/docs/"
             if str(item["id"]) == site:
                 domain = item["domain"]
                 siteJson = item
@@ -127,9 +127,9 @@ if __name__ == '__main__':
                 json.dump(projBranchs[name], file, indent=4)
             subprocess.call(["cp", "docs/"+name+"/public/versions.json", "docs/"+name+"/preview/"])
 
-            subprocess.call(["aws", "s3", "rm", "s3://zego-spreading/"+workspace+"/"+name, "--recursive"])
-            subprocess.call(["aws", "s3", "cp", "./docs/"+name, "s3://zego-spreading/"+workspace+"/docs/"+name, "--recursive", "--acl", "public-read"])
-            #subprocess.call(["aws", "s3", "cp", "docs/projects.json", "s3://zego-spreading/"+workspace+"/docs/", "--acl", "public-read"])
+            subprocess.call(["aws", "s3", "rm", "s3://zego-spreading-test/"+workspace+"/"+name, "--recursive"])
+            subprocess.call(["aws", "s3", "cp", "./docs/"+name, "s3://zego-spreading-test/"+workspace+"/docs/"+name, "--recursive", "--acl", "public-read"])
+            #subprocess.call(["aws", "s3", "cp", "docs/projects.json", "s3://zego-spreading-test/"+workspace+"/docs/", "--acl", "public-read"])
 
         # rename
         rename(workspace+"_"+site)
@@ -148,11 +148,11 @@ if __name__ == '__main__':
 
         # 制品目录，先清理下历史制品
         products_dir = workspace+"_products/"+site
-        subprocess.call(["aws", "s3", "rm", "s3://zego-spreading/"+products_dir, "--recursive"])
+        subprocess.call(["aws", "s3", "rm", "s3://zego-spreading-test/"+products_dir, "--recursive"])
 
         # deploy
         stack = workspace.replace("_", "-")+"-"+site
-        code = subprocess.call(["sam", "deploy", "--stack-name", stack, "--s3-bucket", "zego-spreading", "--s3-prefix", products_dir])
+        code = subprocess.call(["sam", "deploy", "--stack-name", stack, "--s3-bucket", "zego-spreading-test", "--s3-prefix", products_dir])
         if code != 0:
             report_build_status(callback_url, 500, "sam deploy error", i_ws, site, "")
             sys.exit(2)
