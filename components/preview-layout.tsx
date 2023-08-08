@@ -250,20 +250,23 @@ const PreviewLayout = ({ preview, children, slug, frontmatter }: Props) => {
                         <img src={"/icon_logo_spreading.png"} alt="spreading" />
                     </div>
                     <Space wrap>
-                        <Select
+                        {versionWidgetItemList.length > 1 ? <Select
                             labelInValue
                             value={currentVersionWidgetItem}
                             style={{ width: 120 }}
                             onChange={versionChangeHandle}
                             options={versionWidgetItemList}
-                        />
-                        <Select
-                            labelInValue
-                            style={{ width: 120 }}
-                            value={currentLanguageWidgetItem}
-                            onChange={languageChangeHandle}
-                            options={languageWidgetItemList}
-                        />
+                        /> : <></>
+                        }
+                        {languageWidgetItemList.length > 1 ?
+                            <Select
+                                labelInValue
+                                style={{ width: 120 }}
+                                value={currentLanguageWidgetItem}
+                                onChange={languageChangeHandle}
+                                options={languageWidgetItemList}
+                            /> : <></>
+                        }
                     </Space>
                 </header>
                 <main className="preview-main">
