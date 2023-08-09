@@ -38,8 +38,8 @@ Resources:
           - subnet-0d0feef4e11305a33
           - subnet-08ba317bb21685db6
       FileSystemConfigs:
-        Arn: arn:aws:elasticfilesystem:ap-southeast-1:432303926625:access-point/fsap-067ec8e9e11143e20
-        LocalMountPath: /mnt/efs
+        - Arn: arn:aws:elasticfilesystem:ap-southeast-1:432303926625:access-point/fsap-067ec8e9e11143e20
+          LocalMountPath: /mnt/efs
     Metadata:
       BuildMethod: makefile
 
