@@ -150,6 +150,8 @@ if __name__ == '__main__':
         products_dir = workspace+"_products/"+site
         subprocess.call(["aws", "s3", "rm", "s3://zego-spreading-test/"+products_dir, "--recursive"])
 
+        cpoutput = subprocess.check_output(["cp", "-rf", ".aws-sam/build/NextFunction", "/mnt/spreading-15-44"])
+        print("cp:", cpoutput.decode("utf-8"))
         # deploy
         # stack = workspace.replace("_", "-")+"-"+site
         # code = subprocess.call(["sam", "deploy", "--stack-name", stack, "--s3-bucket", "zego-spreading-test", "--s3-prefix", products_dir])

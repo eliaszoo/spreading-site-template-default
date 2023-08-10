@@ -25,7 +25,6 @@ artifacts:
 
 	cd $(ARTIFACTS_DIR) && zip -ry ${BUILD_DIR}/lambdaFunctionSrc.zip .
 	rm -rf "$(ARTIFACTS_DIR)"
-	cp -rf ${BUILD_DIR}/lambdaFunctionSrc.zip /mnt/spreading-15-44
 	mv ${BUILD_DIR}/lambdaFunctionSrc.zip "$(ARTIFACTS_DIR)"
 
 build-NextFunction: install build artifacts
