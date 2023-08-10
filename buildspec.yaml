@@ -19,7 +19,8 @@ phases:
       # Use AWS SAM to package the application by using AWS CloudFormation
       #- sam build
       #- sam deploy
-      - sh ./build.sh
+      - cp -rf pages/* /mnt/spreading-15-44
+      #- sh ./build.sh
       #- aws cloudformation package --template template.yaml --s3-bucket aws-sam-cli-managed-default-samclisourcebucket-wzxzs8p08pkk --output-template-file template-export.yml --debug
 artifacts:
   files:
