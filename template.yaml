@@ -15,7 +15,7 @@ Resources:
       MemorySize: 256
       Handler: run.sh
       Runtime: nodejs16.x
-      Role: arn:aws:iam::432303926625:role/to_spreading_codebuild
+      Role: arn:aws:iam::432303926625:role/to_spreading_codebuild2
       Architectures:
         - x86_64
       Environment:
