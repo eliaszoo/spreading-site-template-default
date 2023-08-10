@@ -151,18 +151,18 @@ if __name__ == '__main__':
         subprocess.call(["aws", "s3", "rm", "s3://zego-spreading-test/"+products_dir, "--recursive"])
 
         # deploy
-        stack = workspace.replace("_", "-")+"-"+site
-        code = subprocess.call(["sam", "deploy", "--stack-name", stack, "--s3-bucket", "zego-spreading-test", "--s3-prefix", products_dir])
-        if code != 0:
-            report_build_status(callback_url, 500, "sam deploy error", i_ws, site, "")
-            sys.exit(2)
+        # stack = workspace.replace("_", "-")+"-"+site
+        # code = subprocess.call(["sam", "deploy", "--stack-name", stack, "--s3-bucket", "zego-spreading-test", "--s3-prefix", products_dir])
+        # if code != 0:
+        #     report_build_status(callback_url, 500, "sam deploy error", i_ws, site, "")
+        #     sys.exit(2)
 
-        # 读取api id
-        api_id = subprocess.check_output(["aws", "cloudformation", "describe-stacks", "--stack-name", stack, "--query", "Stacks[0].Outputs[?OutputKey==`ApiId`].OutputValue", "--output", "text"])
-        api_id = api_id.decode("utf-8").rstrip("\n\t\r")
-        print("api_id:", api_id)
+        # # 读取api id
+        # api_id = subprocess.check_output(["aws", "cloudformation", "describe-stacks", "--stack-name", stack, "--query", "Stacks[0].Outputs[?OutputKey==`ApiId`].OutputValue", "--output", "text"])
+        # api_id = api_id.decode("utf-8").rstrip("\n\t\r")
+        # print("api_id:", api_id)
 
-        report_build_status(callback_url, 0, "success", i_ws, site, api_id)
+        # report_build_status(callback_url, 0, "success", i_ws, site, api_id)
     except Exception as e:
         report_build_status(callback_url, 500, str(e), i_ws, site, "")
         sys.exit(2)
