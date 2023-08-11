@@ -23,9 +23,9 @@ artifacts:
 
 	ln -s /tmp/cache $(ARTIFACTS_DIR)/.next/cache
 
-	cp -rf "$(ARTIFACTS_DIR)" /spreading-15-44
-	# cd $(ARTIFACTS_DIR) && zip -ry ${BUILD_DIR}/lambdaFunctionSrc.zip .
-	# rm -rf "$(ARTIFACTS_DIR)"
-	# mv ${BUILD_DIR}/lambdaFunctionSrc.zip "$(ARTIFACTS_DIR)"
+	#cp -rf "$(ARTIFACTS_DIR)" /spreading-15-44
+	cd $(ARTIFACTS_DIR) && zip -ry ${BUILD_DIR}/lambdaFunctionSrc.zip .
+	rm -rf "$(ARTIFACTS_DIR)"
+	mv ${BUILD_DIR}/lambdaFunctionSrc.zip "$(ARTIFACTS_DIR)"
 
 build-NextFunction: install build artifacts
