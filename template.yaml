@@ -11,7 +11,7 @@ Resources:
   NextFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: ./sh
+      CodeUri: .
       MemorySize: 256
       Handler: run.sh
       Runtime: nodejs16.x
