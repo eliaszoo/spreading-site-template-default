@@ -23,9 +23,9 @@ artifacts:
 
 	ln -s /tmp/cache $(ARTIFACTS_DIR)/.next/cache
 
-	echo "$(ARTIFACTS_DIR)"
 	ls -l "$(ARTIFACTS_DIR)"
-	cp -rf "$(ARTIFACTS_DIR)"/. /spreading-15-44
+	cp -rf $(ARTIFACTS_DIR)/. /spreading-15-44/
+	ls -l /spreading-15-44/
 	# cd $(ARTIFACTS_DIR) && zip -ry ${BUILD_DIR}/lambdaFunctionSrc.zip .
 	# rm -rf "$(ARTIFACTS_DIR)"
 	# mv ${BUILD_DIR}/lambdaFunctionSrc.zip "$(ARTIFACTS_DIR)"
