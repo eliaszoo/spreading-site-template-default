@@ -30,6 +30,18 @@ Resources:
       Events:
         HttpEvent:
           Type: HttpApi
+      VpcConfig:
+        SecurityGroupIds:
+          - vpc-0d21507fa9268c179
+        SubnetIds:
+          - subnet-0d7406209dd8e1398
+          - subnet-0d0feef4e11305a33
+          - subnet-08ba317bb21685db6
+      FileSystemConfigs:
+        - Arn: arn:aws:elasticfilesystem:ap-southeast-1:432303926625:file-system/fs-0d941cb6e4d5d582e
+          LocalMountPath: /mnt/spreading-15-44
+        - Arn: arn:aws:elasticfilesystem:ap-southeast-1:432303926625:file-system/fs-0573632cb5c23fdce
+          LocalMountPath: /mnt/spreading-15-44/pages
     Metadata:
       BuildMethod: makefile
 
