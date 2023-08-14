@@ -38,10 +38,10 @@ Resources:
           - subnet-0d0feef4e11305a33
           - subnet-08ba317bb21685db6
       FileSystemConfigs:
-        - Arn: arn:aws:elasticfilesystem:ap-southeast-1:432303926625:file-system/fs-0d941cb6e4d5d582e
-          LocalMountPath: /mnt/spreading-15-44
-        - Arn: arn:aws:elasticfilesystem:ap-southeast-1:432303926625:file-system/fs-0573632cb5c23fdce
-          LocalMountPath: /mnt/spreading-15-44/pages
+        - Arn: arn:aws:elasticfilesystem:ap-southeast-1:432303926625:access-point/fsap-026cd7420dde39c78
+          LocalMountPath: /mnt/spreading-15-89
+        - Arn: arn:aws:elasticfilesystem:ap-southeast-1:432303926625:access-point/fsap-0048da4b9e1e50d72
+          LocalMountPath: /mnt/spreading-15-89/pages
     Metadata:
       BuildMethod: makefile
 
